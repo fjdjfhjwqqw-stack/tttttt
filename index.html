@@ -1,0 +1,2741 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>萬源聖魔錄 - Pan-Origin Record of Sacred & Demonic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold-light: #fde68a;
+            --gold-mid: #d4af37;
+            --gold-dark: #8a6d1c;
+            --bg-abyss: #090612;
+            --bg-panel: rgba(20, 14, 36, 0.88);
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-abyss);
+            color: #f3e8ff;
+            font-family: 'Noto Sans TC', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(107, 33, 168, 0.22) 0%, transparent 45%),
+                radial-gradient(circle at 80% 80%, rgba(180, 83, 9, 0.18) 0%, transparent 45%),
+                linear-gradient(180deg, #07050f 0%, #130b24 50%, #090612 100%);
+        }
+
+        .font-epic {
+            font-family: 'Noto Serif TC', 'Cinzel', serif;
+        }
+
+        /* 鎏金邊框與奇幻面板 */
+        .gold-border {
+            border: 1.5px solid rgba(212, 175, 55, 0.65);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.18), inset 0 0 12px rgba(212, 175, 55, 0.12);
+        }
+
+        .gold-border-bright {
+            border: 2px solid #f59e0b;
+            box-shadow: 0 0 22px rgba(245, 158, 11, 0.45), inset 0 0 15px rgba(253, 230, 138, 0.25);
+        }
+
+        .fantasy-panel {
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        /* 史詩按鈕 */
+        .btn-epic {
+            background: linear-gradient(135deg, #4c1d95 0%, #2e1065 50%, #1e1b4b 100%);
+            border: 1.5px solid #d4af37;
+            color: #fef3c7;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.2);
+            transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-epic:hover:not(:disabled) {
+            transform: translateY(-2px);
+            border-color: #fde047;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4), inset 0 0 10px rgba(253, 224, 71, 0.3);
+        }
+
+        .btn-epic:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .btn-epic:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            filter: grayscale(0.7);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 50%, #78350f 100%);
+            border: 1.5px solid #fde68a;
+            color: #fffbeb;
+            font-weight: 700;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .btn-gold:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(251, 191, 36, 0.65);
+            filter: brightness(1.1);
+        }
+
+        .btn-gold:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        /* 稀有度邊框光暈 */
+        .rarity-SSR {
+            border: 2px solid #fbbf24;
+            background: linear-gradient(160deg, rgba(120, 53, 15, 0.75) 0%, rgba(30, 14, 54, 0.92) 60%, rgba(180, 83, 9, 0.6) 100%);
+            box-shadow: 0 0 18px rgba(251, 191, 36, 0.45);
+        }
+        .rarity-SR {
+            border: 2px solid #c084fc;
+            background: linear-gradient(160deg, rgba(88, 28, 135, 0.75) 0%, rgba(24, 14, 46, 0.92) 100%);
+            box-shadow: 0 0 14px rgba(192, 132, 252, 0.35);
+        }
+        .rarity-R {
+            border: 2px solid #60a5fa;
+            background: linear-gradient(160deg, rgba(30, 58, 138, 0.7) 0%, rgba(17, 24, 39, 0.92) 100%);
+            box-shadow: 0 0 10px rgba(96, 165, 250, 0.25);
+        }
+
+        /* 魔法陣旋轉動畫 */
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes spinReverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.65; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        @keyframes floatY {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        @keyframes shakeHit {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px) rotate(-2deg); }
+            40% { transform: translateX(8px) rotate(2deg); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+        @keyframes damageFloat {
+            0% { opacity: 1; transform: translateY(0) scale(0.8); }
+            25% { opacity: 1; transform: translateY(-18px) scale(1.25); }
+            100% { opacity: 0; transform: translateY(-55px) scale(0.95); }
+        }
+        @keyframes cutInSlide {
+            0% { transform: translateX(-100%) skewX(-12deg); opacity: 0; }
+            20% { transform: translateX(0%) skewX(-12deg); opacity: 1; }
+            80% { transform: translateX(0%) skewX(-12deg); opacity: 1; }
+            100% { transform: translateX(100%) skewX(-12deg); opacity: 0; }
+        }
+
+        .animate-spin-slow { animation: spinSlow 24s linear infinite; }
+        .animate-spin-reverse { animation: spinReverse 18s linear infinite; }
+        .animate-pulse-glow { animation: pulseGlow 3s ease-in-out infinite; }
+        .animate-float { animation: floatY 3.5s ease-in-out infinite; }
+        .animate-hit { animation: shakeHit 0.4s ease-in-out; }
+        .damage-popup {
+            position: absolute;
+            pointer-events: none;
+            animation: damageFloat 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            z-index: 40;
+            text-shadow: 0 2px 6px #000, 0 0 10px rgba(0,0,0,0.9);
+        }
+        .cut-in-banner {
+            animation: cutInSlide 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* 自訂捲軸 */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 10, 30, 0.6); }
+        ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.5); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.85); }
+
+        /* 大陸地圖節點連線與脈衝 */
+        .node-ring {
+            transition: all 0.25s ease;
+        }
+        .node-ring:hover {
+            transform: translate(-50%, -50%) scale(1.12) !important;
+            filter: brightness(1.25);
+            z-index: 30;
+        }
+
+        /* 礦脈稀有度專屬發光與呼吸特效 */
+        @keyframes veinPulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(34, 211, 238, 0.55), inset 0 0 8px rgba(34, 211, 238, 0.4); }
+            50% { box-shadow: 0 0 22px rgba(34, 211, 238, 0.95), inset 0 0 14px rgba(165, 243, 252, 0.8); }
+        }
+        @keyframes veinLegendaryPulse {
+            0%, 100% { box-shadow: 0 0 14px rgba(250, 204, 21, 0.7), 0 0 28px rgba(232, 121, 249, 0.45); }
+            50% { box-shadow: 0 0 28px rgba(250, 204, 21, 1), 0 0 42px rgba(232, 121, 249, 0.85); }
+        }
+        .vein-node-rich {
+            animation: veinPulse 2.4s ease-in-out infinite;
+        }
+        .vein-node-legendary {
+            animation: veinLegendaryPulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen relative">
+
+    <!-- 背景星空與魔法粒子畫布 -->
+    <canvas id="bg-particles" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- 全域訊息提示框 (取代 alert) -->
+    <div id="toast-container" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none w-11/12 max-w-md"></div>
+
+    <!-- 奧義特寫過場動畫層 -->
+    <div id="ult-cutin-overlay" class="fixed inset-0 pointer-events-none z-50 hidden flex items-center justify-center bg-black/50 backdrop-blur-xs">
+        <div id="ult-cutin-box" class="w-full py-6 bg-gradient-to-r from-transparent via-amber-900/95 to-transparent border-y-2 border-amber-400 flex flex-col items-center justify-center shadow-2xl">
+            <div id="ult-cutin-subtitle" class="text-amber-300 text-xs sm:text-sm tracking-[0.3em] uppercase font-bold mb-1">DIVINE OVERDRIVE</div>
+            <div id="ult-cutin-title" class="font-epic text-2xl sm:text-4xl font-black text-white tracking-wider drop-shadow-[0_0_15px_rgba(251,191,36,0.9)]">聖裁・天罰之光</div>
+        </div>
+    </div>
+
+    <!-- ==================== 1. 陣營抉擇序幕畫面 ==================== -->
+    <section id="faction-select-screen" class="relative z-10 flex-1 flex flex-col items-center justify-center p-4 sm:p-8">
+        <!-- 旋轉魔法陣背景裝飾 -->
+        <div class="fixed inset-0 flex items-center justify-center pointer-events-none opacity-25 overflow-hidden">
+            <svg class="w-[650px] h-[650px] animate-spin-slow text-amber-400" viewBox="0 0 200 200" fill="none" stroke="currentColor">
+                <circle cx="100" cy="100" r="95" stroke-width="0.6" stroke-dasharray="4 2"/>
+                <circle cx="100" cy="100" r="82" stroke-width="1"/>
+                <polygon points="100,10 178,145 22,145" stroke-width="0.8"/>
+                <polygon points="100,190 178,55 22,55" stroke-width="0.8"/>
+                <circle cx="100" cy="100" r="45" stroke-width="0.6"/>
+            </svg>
+        </div>
+
+        <div class="max-w-5xl w-full text-center mb-6 sm:mb-8 relative">
+            <div class="inline-block px-4 py-1 rounded-full border border-amber-500/50 bg-amber-950/40 text-amber-300 text-xs sm:text-sm tracking-widest mb-3">
+                PAN-ORIGIN RECORD OF SACRED & DEMONIC
+            </div>
+            <h1 class="font-epic text-4xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-amber-100 via-amber-300 to-amber-600 drop-shadow-[0_4px_12px_rgba(217,119,6,0.5)] mb-3">
+                萬源聖魔錄
+            </h1>
+            <p class="text-purple-200/90 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+                創世「萬源結晶」碎裂於蒂爾大陸，神聖、深淵、帝國與太古四大勢力烽煙再起。指揮官，請選擇您宣誓效忠的陣營，執掌星辰與契約，重塑世界秩序！
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 max-w-6xl w-full mb-8">
+            <!-- 陣營卡片由 JS 動態生成 -->
+            <div id="faction-cards-container" class="contents"></div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center gap-4">
+            <button id="btn-confirm-faction" disabled onclick="Game.confirmFaction()" class="btn-gold px-10 py-3.5 rounded-xl text-lg tracking-wider flex items-center gap-2 cursor-pointer">
+                <span>締結契約・踏入萬源大陸</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- ==================== 2. 主遊戲介面 ==================== -->
+    <div id="main-game-ui" class="hidden relative z-10 flex-1 flex flex-col max-w-7xl w-full mx-auto px-2 sm:px-4 py-2 sm:py-3">
+        
+        <!-- 頂部指揮官與資源狀態列 -->
+        <header class="fantasy-panel rounded-2xl px-3 sm:px-5 py-2.5 mb-3 flex flex-wrap items-center justify-between gap-2">
+            <!-- 左側：陣營徽記與指揮官資訊 -->
+            <div class="flex items-center gap-3">
+                <div id="header-faction-icon" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl gold-border flex items-center justify-center bg-purple-950/80 shadow-inner"></div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span id="header-faction-name" class="font-epic font-bold text-amber-300 text-sm sm:text-base">聖輝教廷</span>
+                        <span class="text-[11px] px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-200">指揮官 Lv.<span id="ui-cmd-lv">1</span></span>
+                    </div>
+                    <div id="header-faction-buff" class="text-[11px] text-purple-300 truncate max-w-[180px] sm:max-w-xs">陣營加成：光屬性與治療效果 +15%</div>
+                </div>
+            </div>
+
+            <!-- 右側：資源數據與音效控制 -->
+            <div class="flex items-center flex-wrap gap-2 sm:gap-3">
+                <!-- 行動力 AP -->
+                <div class="flex items-center gap-1.5 bg-slate-900/90 border border-emerald-500/40 px-2.5 py-1 rounded-xl" title="用於大陸探索與據點攻佔，每回合或點擊補給可恢復">
+                    <span class="text-emerald-400 text-sm">⚡</span>
+                    <div class="text-xs">
+                        <span class="text-slate-400 hidden sm:inline">行動力 </span>
+                        <span id="ui-ap" class="font-bold text-emerald-300">12</span><span class="text-slate-400">/12</span>
+                    </div>
+                    <button onclick="Game.recoverAP()" class="ml-1 text-[10px] bg-emerald-700/70 hover:bg-emerald-600 text-white px-1.5 py-0.5 rounded transition" title="消耗 100 金幣恢復 4 點行動力">+補給</button>
+                </div>
+
+                <!-- 萬源晶石 -->
+                <div class="flex items-center gap-1.5 bg-slate-900/90 border border-purple-400/50 px-2.5 py-1 rounded-xl" title="用於萬源召喚抽卡">
+                    <span class="text-fuchsia-400 text-sm">💎</span>
+                    <span id="ui-crystals" class="font-bold text-fuchsia-200 text-xs sm:text-sm">1600</span>
+                </div>
+
+                <!-- 魔導金幣 -->
+                <div class="flex items-center gap-1.5 bg-slate-900/90 border border-amber-400/50 px-2.5 py-1 rounded-xl" title="用於英雄升級與據點建設">
+                    <span class="text-amber-400 text-sm">🪙</span>
+                    <span id="ui-gold" class="font-bold text-amber-200 text-xs sm:text-sm">2500</span>
+                </div>
+
+                <!-- 音效開關 & 新手指南 -->
+                <button id="btn-sound-toggle" onclick="SoundFX.toggleMute()" class="p-2 rounded-xl bg-slate-900/90 border border-amber-500/40 text-amber-300 hover:bg-amber-950/50 transition" title="切換魔法音效">
+                    🔊
+                </button>
+                <button onclick="Game.resetSaveData()" class="p-2 rounded-xl bg-slate-900/90 border border-rose-500/40 text-rose-300 hover:bg-rose-950/50 transition text-xs font-bold" title="重置存檔">
+                    🔄 重置
+                </button>
+                <button onclick="Game.toggleModal('guide-modal', true)" class="p-2 rounded-xl bg-slate-900/90 border border-amber-500/40 text-amber-300 hover:bg-amber-950/50 transition text-xs font-bold" title="聖魔錄指南">
+                    📜 指南
+                </button>
+            </div>
+        </header>
+
+        <!-- 主導覽分頁籤 -->
+        <nav class="grid grid-cols-4 gap-1.5 sm:gap-3 mb-3">
+            <button onclick="Game.switchTab('map')" id="tab-btn-map" class="tab-btn btn-epic py-2.5 px-2 rounded-xl font-epic font-bold text-xs sm:text-base flex items-center justify-center gap-1.5 gold-border-bright">
+                <span>🗺️</span><span>大陸沙盤</span>
+            </button>
+            <button onclick="Game.switchTab('roster')" id="tab-btn-roster" class="tab-btn btn-epic py-2.5 px-2 rounded-xl font-epic font-bold text-xs sm:text-base flex items-center justify-center gap-1.5">
+                <span>⚔️</span><span>英雄編隊</span>
+            </button>
+            <button onclick="Game.switchTab('summon')" id="tab-btn-summon" class="tab-btn btn-epic py-2.5 px-2 rounded-xl font-epic font-bold text-xs sm:text-base flex items-center justify-center gap-1.5">
+                <span>✨</span><span>萬源召喚</span>
+            </button>
+            <button onclick="Game.switchTab('codex')" id="tab-btn-codex" class="tab-btn btn-epic py-2.5 px-2 rounded-xl font-epic font-bold text-xs sm:text-base flex items-center justify-center gap-1.5">
+                <span>📖</span><span>英靈圖鑑</span>
+            </button>
+        </nav>
+
+        <!-- ==================== 分頁 1：大陸沙盤據點爭奪 ==================== -->
+        <main id="view-map" class="tab-view flex-1 grid grid-cols-1 lg:grid-cols-12 gap-3">
+            <!-- 左側：互動沙盤戰略地圖 (8欄) -->
+            <div class="lg:col-span-8 fantasy-panel rounded-2xl p-3 sm:p-4 flex flex-col relative overflow-hidden min-h-[480px]">
+                <!-- 頂部：多地圖戰區切換列 -->
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-2 z-10">
+                    <div class="flex flex-wrap items-center gap-1.5" id="region-tabs-bar">
+                        <!-- 四大戰區切換按鈕由 JS 動態生成 -->
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="Game.triggerRandomEvent()" class="btn-epic px-2.5 py-1.5 rounded-xl text-xs flex items-center gap-1" title="探索隨機戰場奇遇">
+                            <span>🎲 奇遇</span>
+                        </button>
+                        <button onclick="Game.mineAllVeins()" class="btn-gold px-3 py-1.5 rounded-xl text-xs sm:text-sm flex items-center gap-1.5 shadow-lg">
+                            <span>⛏️ 一鍵爆採全礦脈</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 戰區情報與區域礦脈連鎖共振狀態列 -->
+                <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-950/80 border border-cyan-500/35 rounded-xl px-3 py-2 mb-2 z-10 text-xs">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span id="ui-region-title" class="font-epic font-bold text-amber-300 text-sm">晨曦平原</span>
+                        <span class="px-2 py-0.5 rounded bg-purple-900/80 border border-purple-400/40 text-purple-200">
+                            據點 <span id="ui-region-conquered" class="font-bold text-white">1</span>/<span id="ui-region-total">10</span>
+                        </span>
+                        <span class="px-2 py-0.5 rounded bg-cyan-950/90 border border-cyan-400/50 text-cyan-200 flex items-center gap-1">
+                            <span>💎 礦脈掌控</span>
+                            <span id="ui-vein-count" class="font-bold text-cyan-300">0/6</span>
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="ui-mining-resonance" class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-900/90 to-amber-900/90 border border-amber-400/50 text-amber-200 font-bold">
+                            ⚡ 礦脈共振加成 +0%
+                        </span>
+                        <span id="ui-idle-rate" class="text-[11px] text-emerald-300 hidden sm:inline">掛機產出: +0 🪙/10秒</span>
+                    </div>
+                </div>
+
+                <!-- 沙盤地圖畫布區 -->
+                <div id="world-map-container" class="relative flex-1 w-full rounded-xl bg-[#0b0718] border border-amber-500/30 overflow-hidden min-h-[380px] sm:min-h-[420px]">
+                    <!-- 戰區背景環境光暈層 -->
+                    <div id="map-biome-bg" class="absolute inset-0 pointer-events-none transition-all duration-500"></div>
+
+                    <!-- SVG 戰略航線與魔法陣底圖 -->
+                    <svg id="map-lines-svg" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 800 500" preserveAspectRatio="none">
+                        <defs>
+                            <radialGradient id="sanctumGlow" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35"/>
+                                <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+                        <circle cx="400" cy="250" r="120" fill="url(#sanctumGlow)" />
+                        <circle cx="400" cy="250" r="85" fill="none" stroke="rgba(251,191,36,0.18)" stroke-width="1" stroke-dasharray="6 4"/>
+                        <g id="map-edges-group"></g>
+                    </svg>
+                    <!-- 地圖據點節點由 JS 動態生成 -->
+                    <div id="map-nodes-layer" class="absolute inset-0 w-full h-full"></div>
+                </div>
+            </div>
+
+            <!-- 右側：據點詳情與戰報日誌 (4欄) -->
+            <div class="lg:col-span-4 flex flex-col gap-3">
+                <!-- 選中據點資訊卡 -->
+                <div id="node-detail-panel" class="fantasy-panel rounded-2xl p-4 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-amber-500/30 pb-2 mb-2.5">
+                            <div class="flex items-center gap-1.5">
+                                <span id="detail-node-type" class="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">主城要塞</span>
+                                <span id="detail-vein-tier" class="hidden text-xs px-2 py-0.5 rounded font-bold">傳說源初脈</span>
+                            </div>
+                            <span id="detail-node-status" class="text-xs font-bold text-emerald-400">● 我方領地</span>
+                        </div>
+                        <h3 id="detail-node-name" class="font-epic text-xl font-bold text-white mb-1">聖輝王都・艾爾登</h3>
+                        <p id="detail-node-desc" class="text-xs text-purple-200/85 leading-relaxed mb-3">
+                            沐浴在永恆聖光之下的宏偉都城，擁有穩固的魔導結界與資源工坊。
+                        </p>
+
+                        <!-- 駐軍增益與守軍情報 -->
+                        <div class="bg-slate-950/70 rounded-xl p-2.5 border border-purple-500/30 mb-2.5">
+                            <div class="text-xs text-amber-300 font-bold mb-1.5 flex justify-between">
+                                <span>駐守軍團情報</span>
+                                <span id="detail-node-power" class="text-rose-400">推薦戰力: 1,200</span>
+                            </div>
+                            <div id="detail-node-enemies" class="flex flex-wrap gap-1.5 text-xs">
+                                <!-- 敵方陣容標籤 -->
+                            </div>
+                        </div>
+
+                        <!-- 佔領與礦脈開採收益 -->
+                        <div class="bg-slate-950/70 rounded-xl p-2.5 border border-cyan-500/30 mb-3">
+                            <div class="text-xs text-cyan-300 font-bold mb-1 flex justify-between">
+                                <span>首勝獎勵 / 單次開採產量</span>
+                                <span id="detail-resonance-tag" class="text-[11px] text-amber-300">含共振 +0%</span>
+                            </div>
+                            <div id="detail-node-rewards" class="text-xs font-bold text-amber-200 flex flex-wrap items-center gap-3">
+                                <span>💎 +300</span>
+                                <span>🪙 +500</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="detail-node-actions" class="mt-1 space-y-2">
+                        <!-- 出征與駐軍開採按鈕由 JS 動態渲染 -->
+                    </div>
+                </div>
+
+                <!-- 戰略日誌 -->
+                <div class="fantasy-panel rounded-2xl p-3.5 flex-1 flex flex-col min-h-[150px] max-h-[210px]">
+                    <div class="text-xs font-epic font-bold text-amber-300 border-b border-amber-500/25 pb-1.5 mb-2 flex items-center justify-between">
+                        <span>📜 蒂爾大陸戰報與礦業日誌</span>
+                        <span class="text-[10px] text-emerald-300">● 自動存檔中</span>
+                    </div>
+                    <div id="strategy-log-list" class="flex-1 overflow-y-auto space-y-1.5 text-xs text-purple-100/90 pr-1">
+                        <!-- 日誌項目 -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ==================== 分頁 2：英雄編隊與養成 ==================== -->
+        <main id="view-roster" class="tab-view hidden flex-1 flex flex-col gap-3">
+            <!-- 出戰陣容槽位 -->
+            <div class="fantasy-panel rounded-2xl p-3 sm:p-4">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <div>
+                        <h2 class="font-epic text-lg sm:text-xl font-bold text-amber-300">遠征出戰編隊 (最多 4 名英靈)</h2>
+                        <p class="text-xs text-purple-300">前排（1~2號位）優先承受敵方攻擊，後排（3~4號位）適合法師與輔助輸出。</p>
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-950/80 px-3.5 py-1.5 rounded-xl border border-amber-500/40">
+                        <span class="text-xs text-purple-200">編隊總戰力</span>
+                        <span id="ui-team-power" class="font-epic text-lg font-black text-amber-400">0</span>
+                    </div>
+                </div>
+
+                <div id="active-squad-slots" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+                    <!-- 4個出戰槽位由 JS 生成 -->
+                </div>
+            </div>
+
+            <!-- 擁有英雄列表 -->
+            <div class="fantasy-panel rounded-2xl p-3 sm:p-4 flex-1">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-epic text-base sm:text-lg font-bold text-amber-200">已契約英靈殿堂 (<span id="ui-owned-count">0</span>)</h3>
+                    <span class="text-xs text-purple-300">點擊英雄卡片可查看詳情、升級或調整出戰</span>
+                </div>
+                <div id="owned-heroes-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                    <!-- 擁有英雄卡片 -->
+                </div>
+            </div>
+        </main>
+
+        <!-- ==================== 分頁 3：萬源召喚（抽卡祭壇） ==================== -->
+        <main id="view-summon" class="tab-view hidden flex-1 flex flex-col items-center justify-center">
+            <div class="fantasy-panel rounded-2xl p-4 sm:p-8 w-full max-w-4xl relative overflow-hidden flex flex-col items-center text-center">
+                <!-- 祭壇旋轉魔法陣 -->
+                <div class="relative w-48 h-48 sm:w-60 sm:h-60 mb-4 flex items-center justify-center">
+                    <svg id="summon-circle-svg" class="w-full h-full text-amber-400 animate-spin-slow drop-shadow-[0_0_20px_rgba(251,191,36,0.6)]" viewBox="0 0 200 200" fill="none" stroke="currentColor">
+                        <circle cx="100" cy="100" r="94" stroke-width="1.5"/>
+                        <circle cx="100" cy="100" r="84" stroke-width="0.8" stroke-dasharray="5 3"/>
+                        <polygon points="100,12 176,144 24,144" stroke-width="1.2"/>
+                        <polygon points="100,188 176,56 24,56" stroke-width="1.2"/>
+                        <circle cx="100" cy="100" r="36" stroke-width="1.5"/>
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span class="text-4xl sm:text-5xl animate-float">🔮</span>
+                        <span class="font-epic text-xs text-amber-200 tracking-widest mt-1">萬源星界門</span>
+                    </div>
+                </div>
+
+                <h2 class="font-epic text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-500 mb-2">
+                    萬源聖魔・星界召喚祭壇
+                </h2>
+                <p class="text-xs sm:text-sm text-purple-200 max-w-xl mb-5">
+                    消耗「萬源晶石」共鳴遠古英靈！重複獲得的英雄將自動轉化為「覺醒星輝」，大幅提升英雄星級與奧義威力。（SSR 機率 12% | SR 機率 38% | R 機率 50%）
+                </p>
+
+                <div class="flex flex-wrap items-center justify-center gap-4 mb-6">
+                    <button onclick="Game.performSummon(1)" class="btn-epic px-6 py-3.5 rounded-xl flex flex-col items-center min-w-[150px]">
+                        <span class="font-epic font-bold text-base text-amber-200">星界單抽 × 1</span>
+                        <span class="text-xs text-fuchsia-300 mt-0.5">💎 160 萬源晶石</span>
+                    </button>
+                    <button onclick="Game.performSummon(10)" class="btn-gold px-7 py-3.5 rounded-xl flex flex-col items-center min-w-[180px] relative">
+                        <span class="absolute -top-2.5 right-2 bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-full border border-amber-200 shadow">必得 SR 以上</span>
+                        <span class="font-epic font-bold text-base">萬源十連喚 × 10</span>
+                        <span class="text-xs text-amber-100 mt-0.5">💎 1,500 萬源晶石</span>
+                    </button>
+                </div>
+
+                <!-- 抽卡結果展示區 -->
+                <div id="summon-results-area" class="w-full hidden">
+                    <div class="text-sm font-epic font-bold text-amber-300 mb-3 border-t border-amber-500/30 pt-4">✨ 召喚共鳴結果 ✨</div>
+                    <div id="summon-cards-grid" class="grid grid-cols-2 sm:grid-cols-5 gap-2.5"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ==================== 分頁 4：英靈圖鑑 ==================== -->
+        <main id="view-codex" class="tab-view hidden flex-1">
+            <div class="fantasy-panel rounded-2xl p-4">
+                <div class="mb-4">
+                    <h2 class="font-epic text-xl font-bold text-amber-300">《萬源聖魔錄》全英靈圖鑑</h2>
+                    <p class="text-xs text-purple-300">收錄蒂爾大陸神、魔、人、太古四大陣營之傳奇指揮官與奧義檔案。</p>
+                </div>
+                <div id="codex-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                    <!-- 圖鑑卡片由 JS 生成 -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ==================== 3. 回合制史詩戰鬥畫面 (Modal/Overlay) ==================== -->
+    <div id="battle-screen" class="fixed inset-0 z-40 hidden bg-[#070410]/95 backdrop-blur-md flex flex-col justify-between p-2 sm:p-4 overflow-y-auto">
+        <!-- 頂部戰鬥控制列 -->
+        <div class="max-w-6xl w-full mx-auto fantasy-panel rounded-2xl px-3 sm:px-5 py-2.5 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5">
+                <span class="px-2.5 py-0.5 rounded bg-rose-900/80 border border-rose-500/50 text-rose-200 text-xs font-bold">據點爭奪戰</span>
+                <h2 id="battle-location-title" class="font-epic font-bold text-amber-300 text-base sm:text-lg">迷霧精靈林</h2>
+                <span class="text-xs text-purple-300">第 <span id="battle-turn-num" class="text-white font-bold">1</span> 回合</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button id="btn-battle-auto" onclick="Battle.toggleAuto()" class="btn-epic px-3 py-1.5 rounded-xl text-xs font-bold">
+                    🤖 自動戰鬥：開啟
+                </button>
+                <button id="btn-battle-speed" onclick="Battle.toggleSpeed()" class="btn-epic px-3 py-1.5 rounded-xl text-xs font-bold">
+                    ⏩ 速度：1x
+                </button>
+                <button onclick="Battle.retreat()" class="px-3 py-1.5 rounded-xl text-xs bg-slate-800 hover:bg-rose-900/80 border border-slate-600 text-slate-200 transition">
+                    🏳️ 撤退
+                </button>
+            </div>
+        </div>
+
+        <!-- 中央戰場舞台 -->
+        <div class="max-w-6xl w-full mx-auto flex-1 flex flex-col justify-center gap-4 my-2 relative">
+            <!-- 敵方陣營區 -->
+            <div class="bg-rose-950/20 border border-rose-500/25 rounded-2xl p-2.5 sm:p-4">
+                <div class="text-xs text-rose-300 font-bold mb-2 flex items-center justify-between">
+                    <span>🔥 敵方守軍陣線</span>
+                    <span class="text-[11px] text-rose-200/70">點擊敵方單位可鎖定集火目標</span>
+                </div>
+                <div id="battle-enemy-units" class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+                    <!-- 敵方戰鬥單位卡片 -->
+                </div>
+            </div>
+
+            <!-- 戰場中央行動提示條 -->
+            <div id="battle-banner-msg" class="text-center py-1.5 px-4 rounded-full bg-amber-950/60 border border-amber-500/40 text-amber-200 text-xs sm:text-sm font-epic tracking-wide mx-auto">
+                ⚔️ 戰鬥開始！雙方英靈正在凝聚魔力...
+            </div>
+
+            <!-- 我方陣營區 -->
+            <div class="bg-indigo-950/25 border border-amber-500/30 rounded-2xl p-2.5 sm:p-4">
+                <div class="text-xs text-amber-300 font-bold mb-2 flex items-center justify-between">
+                    <span>🛡️ 我方遠征英靈 (怒氣滿 100 點可點擊施放奧義)</span>
+                    <span id="battle-faction-bonus-tag" class="text-[11px] text-emerald-300">陣營加成生效中</span>
+                </div>
+                <div id="battle-ally-units" class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+                    <!-- 我方戰鬥單位卡片 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部即時戰鬥文字紀錄 -->
+        <div class="max-w-6xl w-full mx-auto fantasy-panel rounded-xl p-2.5 h-24 overflow-y-auto text-xs space-y-1" id="battle-combat-log">
+        </div>
+    </div>
+
+    <!-- ==================== 4. 英雄詳情與養成彈窗 ==================== -->
+    <div id="hero-detail-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-xs flex items-center justify-center p-3">
+        <div class="fantasy-panel gold-border-bright rounded-2xl max-w-lg w-full p-5 relative">
+            <button onclick="Game.toggleModal('hero-detail-modal', false)" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-slate-800 hover:bg-rose-800 text-white flex items-center justify-center">✕</button>
+            <div id="hero-modal-content"></div>
+        </div>
+    </div>
+
+    <!-- ==================== 5. 新手引導說明彈窗 ==================== -->
+    <div id="guide-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-xs flex items-center justify-center p-3">
+        <div class="fantasy-panel gold-border rounded-2xl max-w-xl w-full p-5 sm:p-6 relative max-h-[85vh] overflow-y-auto">
+            <button onclick="Game.toggleModal('guide-modal', false)" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-slate-800 hover:bg-rose-800 text-white flex items-center justify-center">✕</button>
+            <h3 class="font-epic text-2xl font-bold text-amber-300 mb-3">📜 《萬源聖魔錄》指揮官手冊</h3>
+            <div class="space-y-3 text-xs sm:text-sm text-purple-100 leading-relaxed">
+                <div class="p-3 rounded-xl bg-slate-900/80 border border-amber-500/30">
+                    <div class="font-bold text-amber-300 mb-1">1. 四大戰區與「億點點礦脈」共振系統</div>
+                    <p>蒂爾大陸劃分為<span class="text-amber-300">晨曦平原、永夜深淵、龍吼峰脈、萬源禁地</span>四大戰區，每區皆分佈多達 5~7 座普通、富饒與傳說級礦脈！每佔領同戰區一座礦脈，即可觸發 <span class="text-cyan-300 font-bold">+15% 礦脈連鎖共振</span>，大幅提升掛機產量與「一鍵爆採」暴擊收益！</p>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-900/80 border border-amber-500/30">
+                    <div class="font-bold text-amber-300 mb-1">2. 陣營羈絆與元素克制</div>
+                    <p>四大陣營各有專屬全域光環。戰鬥中存在元素克制：<span class="text-rose-400">火克風</span>、<span class="text-emerald-400">風克水</span>、<span class="text-sky-400">水克火</span>（造成 1.25 倍傷害），<span class="text-amber-300">光與暗</span>互相克制（造成 1.2 倍傷害）。</p>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-900/80 border border-amber-500/30">
+                    <div class="font-bold text-amber-300 mb-1">3. 駐軍增益與奧義手動操作</div>
+                    <p>點擊已佔領的礦脈可派遣主力駐守，使該礦脈產量翻倍（×1.5）！戰鬥中怒氣達 100 點可點擊英靈頭像手動施放全螢幕奧義逆轉戰局。</p>
+                </div>
+            </div>
+            <div class="mt-5 text-center">
+                <button onclick="Game.toggleModal('guide-modal', false)" class="btn-gold px-6 py-2 rounded-xl text-sm">領命・返回戰場</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+/**
+ * ============================================================================
+ * 1. Web Audio API 奇幻魔法合成音效系統 (無需外部音檔)
+ * ============================================================================
+ */
+const SoundFX = {
+    ctx: null,
+    muted: false,
+
+    init() {
+        if (!this.ctx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+    },
+
+    toggleMute() {
+        this.muted = !this.muted;
+        const btn = document.getElementById('btn-sound-toggle');
+        if (btn) btn.textContent = this.muted ? '🔇' : '🔊';
+        if (!this.muted) {
+            this.init();
+            this.playClick();
+        }
+    },
+
+    playClick() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(660, now);
+        osc.frequency.exponentialRampToValueAtTime(990, now + 0.08);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.09);
+    },
+
+    playMagicAttack(element = 'light') {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        
+        const freqMap = { light: 520, dark: 180, fire: 260, water: 420, wind: 580 };
+        const baseFreq = freqMap[element] || 360;
+
+        osc.type = element === 'dark' ? 'sawtooth' : 'sine';
+        osc.frequency.setValueAtTime(baseFreq, now);
+        osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.6, now + 0.12);
+        osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.5, now + 0.28);
+
+        gain.gain.setValueAtTime(0.16, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+    },
+
+    playUltimate() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const notes = [261.63, 329.63, 392.00, 523.25, 659.25];
+        notes.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+            gain.gain.setValueAtTime(0.15, now + idx * 0.06);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.55);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + idx * 0.06);
+            osc.stop(now + idx * 0.06 + 0.55);
+        });
+    },
+
+    playSummonSparkle(isSSR = false) {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const freqs = isSSR ? [523, 659, 784, 1046, 1318, 1568] : [440, 554, 659, 880];
+        freqs.forEach((f, i) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(f, now + i * 0.07);
+            gain.gain.setValueAtTime(0.14, now + i * 0.07);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.45);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + i * 0.07);
+            osc.stop(now + i * 0.07 + 0.45);
+        });
+    },
+
+    playVictory() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const fanfare = [392.00, 392.00, 392.00, 523.25, 659.25, 783.99];
+        const times = [0, 0.14, 0.28, 0.44, 0.62, 0.85];
+        fanfare.forEach((f, i) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(f, now + times[i]);
+            gain.gain.setValueAtTime(0.18, now + times[i]);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + times[i] + 0.5);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + times[i]);
+            osc.stop(now + times[i] + 0.5);
+        });
+    }
+};
+
+/**
+ * ============================================================================
+ * 2. 《萬源聖魔錄》世界觀核心資料庫 (陣營、英雄、大陸據點)
+ * ============================================================================
+ */
+const FACTIONS = {
+    sacred: {
+        id: 'sacred',
+        name: '聖輝教廷',
+        sub: 'SACRED THEOCRACY',
+        color: '#fbbf24',
+        borderClass: 'border-amber-400',
+        bgGradient: 'from-amber-900/60 via-purple-950/90 to-slate-950',
+        buffDesc: '神聖庇佑：全體光屬性攻擊 +15%，戰鬥每回合恢復 5% 生命',
+        starterHero: 'aurelia',
+        desc: '侍奉創世聖光的神聖國度，以潔白羽翼與審判聖典淨化世間混沌。',
+        svgIcon: `<svg viewBox="0 0 64 64" class="w-full h-full"><circle cx="32" cy="32" r="28" fill="none" stroke="#fbbf24" stroke-width="2"/><polygon points="32,8 38,26 56,32 38,38 32,56 26,38 8,32 26,26" fill="#fde68a" opacity="0.9"/><circle cx="32" cy="32" r="7" fill="#fffbeb"/></svg>`
+    },
+    abyss: {
+        id: 'abyss',
+        name: '深淵魔域',
+        sub: 'ABYSSAL DOMINION',
+        color: '#e879f9',
+        borderClass: 'border-fuchsia-400',
+        bgGradient: 'from-fuchsia-950/70 via-purple-950/90 to-slate-950',
+        buffDesc: '猩紅渴望：全體暴擊傷害 +25%，暗屬性技能威力 +15%',
+        starterHero: 'lilith',
+        desc: '盤踞於永夜裂隙的魔族霸主，崇尚力量與血脈覺醒，欲將萬源結晶納入永夜。',
+        svgIcon: `<svg viewBox="0 0 64 64" class="w-full h-full"><circle cx="32" cy="32" r="28" fill="none" stroke="#e879f9" stroke-width="2"/><path d="M16 18 C22 34, 42 34, 48 18 C44 42, 36 52, 32 56 C28 52, 20 42, 16 18 Z" fill="#d946ef" opacity="0.85"/><circle cx="32" cy="32" r="6" fill="#fae8ff"/></svg>`
+    },
+    empire: {
+        id: 'empire',
+        name: '聖羅蘭帝國',
+        sub: 'ST. ROLAND EMPIRE',
+        color: '#60a5fa',
+        borderClass: 'border-sky-400',
+        bgGradient: 'from-sky-950/70 via-indigo-950/90 to-slate-950',
+        buffDesc: '鐵血軍紀：全體物理攻擊 +15%，初始戰鬥怒氣 +25 點',
+        starterHero: 'valkyrie',
+        desc: '人類文明的巔峰結晶，憑藉魔導機甲與女武神騎士團在神魔夾縫中開拓霸業。',
+        svgIcon: `<svg viewBox="0 0 64 64" class="w-full h-full"><circle cx="32" cy="32" r="28" fill="none" stroke="#60a5fa" stroke-width="2"/><path d="M32 10 L48 20 V36 C48 46 32 54 32 54 C32 54 16 46 16 36 V20 Z" fill="#3b82f6" opacity="0.85"/><path d="M32 16 V48 M22 28 H42" stroke="#eff6ff" stroke-width="3"/></svg>`
+    },
+    primordial: {
+        id: 'primordial',
+        name: '太古靈境',
+        sub: 'PRIMORDIAL REALM',
+        color: '#34d399',
+        borderClass: 'border-emerald-400',
+        bgGradient: 'from-emerald-950/70 via-teal-950/90 to-slate-950',
+        buffDesc: '自然共鳴：元素克制傷害額外 +20%，全體最大生命 +15%',
+        starterHero: 'aoli',
+        desc: '古老真龍與自然精靈棲息的神秘仙境，守護著大地脈動與太古元素法則。',
+        svgIcon: `<svg viewBox="0 0 64 64" class="w-full h-full"><circle cx="32" cy="32" r="28" fill="none" stroke="#34d399" stroke-width="2"/><path d="M32 12 C44 22, 46 40, 32 52 C18 40, 20 22, 32 12 Z" fill="#10b981" opacity="0.85"/><circle cx="32" cy="32" r="8" fill="none" stroke="#d1fae5" stroke-width="2.5"/></svg>`
+    }
+};
+
+const ELEMENTS = {
+    light: { name: '光', icon: '☀️', color: 'text-amber-300', bg: 'bg-amber-500/20 border-amber-400/50' },
+    dark:  { name: '暗', icon: '🌙', color: 'text-fuchsia-300', bg: 'bg-fuchsia-500/20 border-fuchsia-400/50' },
+    fire:  { name: '火', icon: '🔥', color: 'text-rose-400', bg: 'bg-rose-500/20 border-rose-400/50' },
+    water: { name: '水', icon: '💧', color: 'text-sky-300', bg: 'bg-sky-500/20 border-sky-400/50' },
+    wind:  { name: '風', icon: '🍃', color: 'text-emerald-300', bg: 'bg-emerald-500/20 border-emerald-400/50' }
+};
+
+// 10 名具代表性的《萬源聖魔錄》美少女/史詩英雄資料庫
+const HERO_TEMPLATES = [
+    {
+        id: 'aurelia',
+        name: '奧蕾莉亞',
+        title: '聖光大主教',
+        rarity: 'SSR',
+        faction: 'sacred',
+        element: 'light',
+        role: '神聖法師 / 群體治療',
+        hp: 1350, atk: 340, def: 140,
+        normalName: '聖輝懲戒',
+        ultName: '聖裁・天罰之光',
+        ultType: 'aoe_heal',
+        ultMult: 1.45,
+        ultDesc: '召喚天堂聖光審判全體敵人造成 145% 光屬性傷害，並為我方全體恢復 25% 最大生命。',
+        lore: '聖輝教廷最年輕的紅衣大主教，雙眸能映照出靈魂的純潔與罪孽，手持「晨曦聖典」守護信仰。',
+        avatarColor: '#f59e0b',
+        emblem: '👼'
+    },
+    {
+        id: 'lilith',
+        name: '莉莉絲',
+        title: '深淵猩紅魔王',
+        rarity: 'SSR',
+        faction: 'abyss',
+        element: 'dark',
+        role: '毀滅魔導 / 爆發收割',
+        hp: 1280, atk: 390, def: 125,
+        normalName: '暗影蝕心',
+        ultName: '永夜・猩紅終焉',
+        ultType: 'aoe_dmg',
+        ultMult: 1.75,
+        ultDesc: '解放深淵魔眼，對敵方全體降下毀滅黑炎，造成 175% 暗屬性巨額傷害。',
+        lore: '統御深淵第七魔域的絕美魔王，慵懶的微笑下隱藏著足以吞噬星辰的魔力洪流。',
+        avatarColor: '#d946ef',
+        emblem: '🦇'
+    },
+    {
+        id: 'valkyrie',
+        name: '瓦爾基里',
+        title: '帝國銀翼女武神',
+        rarity: 'SSR',
+        faction: 'empire',
+        element: 'fire',
+        role: '前排戰神 / 單體破甲',
+        hp: 1620, atk: 355, def: 175,
+        normalName: '蒼穹突刺',
+        ultName: '神威・英靈烈焰槍',
+        ultType: 'single_nuke',
+        ultMult: 2.85,
+        ultDesc: '化作赤紅流星貫穿鎖定目標，造成 285% 火屬性毀滅性單體傷害並獲得護盾。',
+        lore: '聖羅蘭帝國第一騎士團團長，身披魔導銀甲，誓以手中長槍為人類開創不朽榮光。',
+        avatarColor: '#ef4444',
+        emblem: '⚔️'
+    },
+    {
+        id: 'aoli',
+        name: '敖璃',
+        title: '太古蒼穹龍姬',
+        rarity: 'SSR',
+        faction: 'primordial',
+        element: 'water',
+        role: '全能龍裔 / 冰霜壓制',
+        hp: 1550, atk: 350, def: 165,
+        normalName: '龍息波濤',
+        ultName: '太古・滄海龍皇怒',
+        ultType: 'aoe_dmg',
+        ultMult: 1.65,
+        ultDesc: '顯化太古真龍之姿，掀起萬丈怒濤席捲敵陣，造成 165% 水屬性全體傷害。',
+        lore: '沉睡於太古靈境龍潭千年的真龍少女，因感應到萬源結晶的悸動而甦醒入世。',
+        avatarColor: '#06b6d4',
+        emblem: '🐉'
+    },
+    {
+        id: 'selene',
+        name: '塞勒涅',
+        title: '星辰大占卜師',
+        rarity: 'SSR',
+        faction: 'sacred',
+        element: 'wind',
+        role: '星象輔助 / 怒氣增幅',
+        hp: 1320, atk: 325, def: 145,
+        normalName: '星屑飛彈',
+        ultName: '銀河・命運星軌',
+        ultType: 'team_buff',
+        ultMult: 1.35,
+        ultDesc: '引動十二星宮之力對全體敵人造成 135% 風屬性傷害，並使我方全體額外獲得 35 點怒氣！',
+        lore: '觀測星海命運軌跡的神秘少女，她的水晶球早已預見了神魔大戰的終局。',
+        avatarColor: '#10b981',
+        emblem: '🔮'
+    },
+    {
+        id: 'seraphina',
+        name: '瑟拉菲娜',
+        title: '熾天使聖衛',
+        rarity: 'SR',
+        faction: 'sacred',
+        element: 'fire',
+        role: '前排聖盾 / 守護',
+        hp: 1480, atk: 255, def: 165,
+        normalName: '烈陽斬擊',
+        ultName: '聖盾・不滅壁壘',
+        ultType: 'single_nuke',
+        ultMult: 2.2,
+        ultDesc: '以熾熱聖劍重擊單體敵人造成 220% 火屬性傷害，並為自身恢復 30% 生命。',
+        lore: '奧蕾莉亞最忠誠的近衛騎士，手持銘刻聖言的塔盾，寸步不讓。',
+        avatarColor: '#f97316',
+        emblem: '🛡️'
+    },
+    {
+        id: 'morrigan',
+        name: '莫甘娜',
+        title: '夜鴉魅影刺客',
+        rarity: 'SR',
+        faction: 'abyss',
+        element: 'wind',
+        role: '疾風刺客 / 致命連擊',
+        hp: 1120, atk: 315, def: 110,
+        normalName: '雙刃瞬殺',
+        ultName: '暗夜・千羽絕影',
+        ultType: 'single_nuke',
+        ultMult: 2.45,
+        ultDesc: '化作無數夜鴉殘影瞬殺目標，造成 245% 風屬性高爆發單體傷害。',
+        lore: '潛行於黑夜中的魔族暗殺者，無人能看清她拔出雙匕首的瞬間。',
+        avatarColor: '#a855f7',
+        emblem: '🗡️'
+    },
+    {
+        id: 'isolde',
+        name: '伊索爾德',
+        title: '冰霜魔導學士',
+        rarity: 'SR',
+        faction: 'empire',
+        element: 'water',
+        role: '控場法師 / 寒冰',
+        hp: 1180, atk: 295, def: 120,
+        normalName: '冰錐術',
+        ultName: '極寒・絕對零度',
+        ultType: 'aoe_dmg',
+        ultMult: 1.4,
+        ultDesc: '召喚暴風雪凍結戰場，對敵方全體造成 140% 水屬性傷害。',
+        lore: '帝國皇家魔導學院首席天才，擅長將大氣中的水元素凝結為致命冰晶。',
+        avatarColor: '#38bdf8',
+        emblem: '❄️'
+    },
+    {
+        id: 'lyra',
+        name: '萊拉',
+        title: '翡翠林間遊俠',
+        rarity: 'R',
+        faction: 'primordial',
+        element: 'wind',
+        role: '精靈射手 / 支援',
+        hp: 1050, atk: 245, def: 105,
+        normalName: '疾風箭矢',
+        ultName: '森羅・百步穿楊',
+        ultType: 'single_nuke',
+        ultMult: 2.0,
+        ultDesc: '射出蘊含自然精靈之力的穿雲箭，對單體造成 200% 風屬性傷害。',
+        lore: '守護太古靈境邊界的高等精靈哨兵，箭無虛發。',
+        avatarColor: '#4ade80',
+        emblem: '🏹'
+    },
+    {
+        id: 'galahad',
+        name: '加拉哈德',
+        title: '帝國白銀衛士',
+        rarity: 'R',
+        faction: 'empire',
+        element: 'light',
+        role: '前排重裝 / 護衛',
+        hp: 1320, atk: 215, def: 145,
+        normalName: '重劍劈斬',
+        ultName: '榮耀・十字斬',
+        ultType: 'single_nuke',
+        ultMult: 1.9,
+        ultDesc: '揮舞白銀大劍斬出十字光波，對單體造成 190% 光屬性傷害。',
+        lore: '恪守騎士道精神的帝國先鋒，總是在最前線為戰友擋下刀鋒。',
+        avatarColor: '#94a3b8',
+        emblem: '⚜️'
+    }
+];
+
+/**
+ * ============================================================================
+ * 蒂爾大陸四大戰區與「億點點礦脈」全地圖資料庫 (每區 9~11 座據點，含 6~7 座特色礦脈)
+ * veinTier: 'normal' (普通礦脈) | 'rich' (富饒結晶脈) | 'legendary' (傳說級源初礦脈)
+ * ============================================================================
+ */
+const WORLD_REGIONS = {
+    dawn_plains: {
+        id: 'dawn_plains',
+        name: '晨曦平原',
+        icon: '🌅',
+        subtitle: '聖輝與自然交織的豐饒沃土，星晶與聖水靈脈星羅棋布。',
+        bgStyle: 'radial-gradient(circle at 30% 30%, rgba(245, 158, 11, 0.16), transparent 60%), radial-gradient(circle at 75% 70%, rgba(16, 185, 129, 0.14), transparent 55%)',
+        nodes: [
+            {
+                id: 'dp_capital', name: '聖輝王都・艾爾登', type: '陣營主城', isVein: false,
+                x: 11, y: 50, conquered: true, apCost: 0, power: 800, crystals: 200, gold: 400,
+                desc: '我方遠征軍的起始大本營，擁有穩固的魔導結界與資源工坊。',
+                enemies: [], connections: ['dp_vein_1', 'dp_vein_2', 'dp_forest']
+            },
+            {
+                id: 'dp_vein_1', name: '微光星晶礦脈', type: '普通礦脈', isVein: true, veinTier: 'normal', veinIcon: '💠',
+                x: 24, y: 20, conquered: false, apCost: 1, power: 1050, crystals: 240, gold: 320,
+                desc: '地表裸露的淡藍色星晶礦床，開採難度低，適合初期迅速累積萬源晶石。',
+                enemies: [{ templateId: 'lyra', lv: 1 }, { templateId: 'galahad', lv: 1 }],
+                connections: ['dp_capital', 'dp_forest', 'dp_vein_3']
+            },
+            {
+                id: 'dp_vein_2', name: '白銀秘銀礦坑', type: '普通礦脈', isVein: true, veinTier: 'normal', veinIcon: '⛏️',
+                x: 24, y: 80, conquered: false, apCost: 1, power: 1100, crystals: 180, gold: 480,
+                desc: '盛產魔導秘銀的古老礦坑，每小時能鑄造出大量帝國金幣。',
+                enemies: [{ templateId: 'galahad', lv: 2 }, { templateId: 'lyra', lv: 1 }],
+                connections: ['dp_capital', 'dp_vein_4']
+            },
+            {
+                id: 'dp_forest', name: '迷霧精靈古林', type: '戰略據點', isVein: false,
+                x: 41, y: 42, conquered: false, apCost: 2, power: 1450, crystals: 300, gold: 450,
+                desc: '太古靈氣繚繞的古老森林，扼守通往平原腹地的交通要衝。',
+                enemies: [{ templateId: 'lyra', lv: 2 }, { templateId: 'seraphina', lv: 2 }, { templateId: 'lyra', lv: 2 }],
+                connections: ['dp_capital', 'dp_vein_1', 'dp_vein_3', 'dp_vein_5']
+            },
+            {
+                id: 'dp_vein_3', name: '翡翠靈葉晶脈', type: '富饒結晶脈', isVein: true, veinTier: 'rich', veinIcon: '❇️',
+                x: 46, y: 15, conquered: false, apCost: 2, power: 1650, crystals: 420, gold: 550,
+                desc: '吸收千年樹心靈氣結晶而成的翡翠礦脈，散發濃郁生命光輝！',
+                enemies: [{ templateId: 'lyra', lv: 3 }, { templateId: 'isolde', lv: 2 }, { templateId: 'galahad', lv: 3 }],
+                connections: ['dp_vein_1', 'dp_forest', 'dp_vein_6']
+            },
+            {
+                id: 'dp_vein_4', name: '日耀砂金礦床', type: '富饒結晶脈', isVein: true, veinTier: 'rich', veinIcon: '🪙',
+                x: 45, y: 78, conquered: false, apCost: 2, power: 1700, crystals: 350, gold: 780,
+                desc: '陽光照射下閃耀燦爛金芒的露天礦脈，魔導金幣產量極為驚人！',
+                enemies: [{ templateId: 'seraphina', lv: 3 }, { templateId: 'galahad', lv: 3 }, { templateId: 'isolde', lv: 2 }],
+                connections: ['dp_vein_2', 'dp_vein_5', 'dp_fortress']
+            },
+            {
+                id: 'dp_vein_5', name: '古代聖水泉脈', type: '富饒結晶脈', isVein: true, veinTier: 'rich', veinIcon: '💧',
+                x: 63, y: 52, conquered: false, apCost: 2, power: 1950, crystals: 480, gold: 620,
+                desc: '從聖輝地脈深處湧出的液態魔力泉脈，凝結著高純度水屬性晶核。',
+                enemies: [{ templateId: 'isolde', lv: 3 }, { templateId: 'seraphina', lv: 3 }, { templateId: 'aurelia', lv: 3 }],
+                connections: ['dp_forest', 'dp_vein_4', 'dp_vein_6', 'dp_fortress']
+            },
+            {
+                id: 'dp_vein_6', name: '天穹聖輝源初脈', type: '傳說級源初礦脈', isVein: true, veinTier: 'legendary', veinIcon: '🌟',
+                x: 74, y: 20, conquered: false, apCost: 3, power: 2350, crystals: 760, gold: 980,
+                desc: '【傳說礦脈】創世聖光墜落之地形成的巨型源初結晶脈，蘊含近乎無窮的星界能量！',
+                enemies: [{ templateId: 'aurelia', lv: 4 }, { templateId: 'seraphina', lv: 4 }, { templateId: 'selene', lv: 3 }],
+                connections: ['dp_vein_3', 'dp_vein_5', 'dp_fortress']
+            },
+            {
+                id: 'dp_fortress', name: '獅心帝國關隘', type: '戰區要塞', isVein: false,
+                x: 88, y: 55, conquered: false, apCost: 3, power: 2500, crystals: 650, gold: 900,
+                desc: '晨曦平原東境的雄偉關隘，攻克後可全面掌控平原所有靈脈資源！',
+                enemies: [{ templateId: 'valkyrie', lv: 4 }, { templateId: 'seraphina', lv: 4 }, { templateId: 'isolde', lv: 4 }],
+                connections: ['dp_vein_4', 'dp_vein_5', 'dp_vein_6']
+            }
+        ]
+    },
+
+    eternal_abyss: {
+        id: 'eternal_abyss',
+        name: '永夜深淵',
+        icon: '🌑',
+        subtitle: '魔氣翻湧的暗夜裂谷，遍布黑曜石、血晶與虛空乙太礦脈。',
+        bgStyle: 'radial-gradient(circle at 25% 70%, rgba(192, 38, 211, 0.2), transparent 60%), radial-gradient(circle at 80% 25%, rgba(225, 29, 72, 0.18), transparent 55%)',
+        nodes: [
+            {
+                id: 'ea_outpost', name: '暗影前哨營地', type: '遠征營地', isVein: false,
+                x: 11, y: 50, conquered: true, apCost: 0, power: 1500, crystals: 260, gold: 450,
+                desc: '遠征軍在永夜邊界建立的結界營地，抵禦深淵瘴氣侵蝕。',
+                enemies: [], connections: ['ea_vein_1', 'ea_vein_2']
+            },
+            {
+                id: 'ea_vein_1', name: '深淵黑曜礦脈', type: '普通礦脈', isVein: true, veinTier: 'normal', veinIcon: '🖤',
+                x: 25, y: 22, conquered: false, apCost: 2, power: 2100, crystals: 360, gold: 520,
+                desc: '由深淵地火冷卻形成的黑曜結晶脈，蘊含純粹暗屬性魔力。',
+                enemies: [{ templateId: 'morrigan', lv: 4 }, { templateId: 'galahad', lv: 4 }],
+                connections: ['ea_outpost', 'ea_vein_3', 'ea_rift']
+            },
+            {
+                id: 'ea_vein_2', name: '幽冥硫磺火礦', type: '普通礦脈', isVein: true, veinTier: 'normal', veinIcon: '🔥',
+                x: 25, y: 78, conquered: false, apCost: 2, power: 2150, crystals: 320, gold: 640,
+                desc: '地底熔岩裂縫旁伴生的熾熱晶礦，是鍛造魔導兵器的頂級材料。',
+                enemies: [{ templateId: 'seraphina', lv: 4 }, { templateId: 'morrigan', lv: 4 }],
+                connections: ['ea_outpost', 'ea_vein_4', 'ea_rift']
+            },
+            {
+                id: 'ea_rift', name: '噬魂魔霧峽谷', type: '戰略據點', isVein: false,
+                x: 43, y: 50, conquered: false, apCost: 2, power: 2450, crystals: 460, gold: 680,
+                desc: '終年籠罩紫色魔霧的險峻峽谷，夜鴉刺客在此設下重重埋伏。',
+                enemies: [{ templateId: 'morrigan', lv: 5 }, { templateId: 'isolde', lv: 4 }, { templateId: 'morrigan', lv: 4 }],
+                connections: ['ea_vein_1', 'ea_vein_2', 'ea_vein_3', 'ea_vein_4', 'ea_vein_5']
+            },
+            {
+                id: 'ea_vein_3', name: '猩紅血晶靈脈', type: '富饒結晶脈', isVein: true, veinTier: 'rich', veinIcon: '♦️',
+                x: 50, y: 16, conquered: false, apCost: 2, power: 2650, crystals: 620, gold: 780,
+                desc: '宛如紅寶石般跳動著魔力脈搏的血晶礦脈，產量極為豐厚！',
+                enemies: [{ templateId: 'lilith', lv: 4 }, { templateId: 'morrigan', lv: 5 }, { templateId: 'lyra', lv: 5 }],
+                connections: ['ea_vein_1', 'ea_rift', 'ea_vein_6']
+            },
+            {
+                id: 'ea_vein_4', name: '暗影魔銀礦洞', type: '富饒結晶脈', isVein: true, veinTier: 'rich', veinIcon: '⛓️',
+                x: 50, y: 84, conquered: false, apCost: 2, power: 2700, crystals: 540, gold: 960,
+                desc: '深埋於魔域地底的巨大魔銀礦脈，能為軍團提供海量金幣資金。',
+                enemies: [{ templateId: 'valkyrie', lv: 4 }, { templateId: 'morrigan', lv: 5 }, { templateId: 'galahad', lv: 5 }],
+                connections: ['ea_vein_2', 'ea_rift', 'ea_vein_7']
+            },
+            {
+                id: 'ea_vein_5', name: '虛空乙太裂隙脈', type: '富饒結晶脈', isVein: true, veinTier: 'rich', veinIcon: '🔮',
+                x: 66, y: 50, conquered: false, apCost: 3, power: 2950, crystals: 720, gold: 880,
+                desc: '空間裂縫邊緣凝結的虛空乙太礦床，每顆晶石都折射著異界星光。',
+                enemies: [{ templateId: 'selene', lv: 5 }, { templateId: 'lilith', lv: 5 }, { templateId: 'isolde', lv: 5 }],
+                connections: ['ea_rift', 'ea_vein_6', 'ea_vein_7', 'ea_citadel']
+            },
+            {
+                id: 'ea_vein_6', name: '永夜魔皇源初脈', type: '傳說級源初礦脈', isVein: true, veinTier: 'legendary', veinIcon: '👑',
+                x: 76, y: 18, conquered: false, apCost: 3, power: 3250, crystals: 1050, gold: 1350,
+                desc: '【傳說礦脈】深淵第七魔域核心的源初魔晶巨脈，蘊含億萬年沉澱的暗源精華！',
+                enemies: [{ templateId: 'lilith', lv: 6 }, { templateId: 'morrigan', lv: 6 }, { templateId: 'aurelia', lv: 5 }],
+                connections: ['ea_vein_3', 'ea_vein_5', 'ea_citadel']
+            },
+            {
+                id: 'ea_vein_7', name: '深淵地心熔金脈', type: '傳說級源初礦脈', isVein: true, veinTier: 'legendary', veinIcon: '🌋',
+                x: 76, y: 82, conquered: false, apCost: 3, power: 3300, crystals: 920, gold: 1650,
+                desc: '【傳說礦脈】流淌著純金魔導岩漿的地心礦脈，每次開採皆是暴富盛宴！',
+                enemies: [{ templateId: 'valkyrie', lv: 6 }, { templateId: 'lilith', lv: 5 }, { templateId: 'seraphina', lv: 6 }],
+                connections: ['ea_vein_4', 'ea_vein_5', 'ea_citadel']
+            },
+            {
+                id: 'ea_citadel', name: '猩紅魔王殿・夜幕', type: '戰區要塞', isVein: false,
+                x: 90, y: 50, conquered: false, apCost: 4, power: 3600, crystals: 980, gold: 1400,
+                desc: '莉莉絲親衛軍駐守的暗黑宮殿，征服此地即可稱霸整座永夜深淵！',
+                enemies: [{ templateId: 'lilith', lv: 6 }, { templateId: 'morrigan', lv: 6 }, { templateId: 'selene', lv: 6 }],
+                connections: ['ea_vein_5', 'ea_vein_6', 'ea_vein_7']
+            }
+        ]
+    },
+
+    dragon_peaks: {
+        id: 'dragon_peaks',
+        name: '龍吼峰脈',
+        icon: '🐉',
+        subtitle: '太古真龍盤踞的萬仞雪峰，冰晶、龍血魔金與風雷靈脈交匯。',
+        bgStyle: 'radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.2), transparent 60%), radial-gradient(circle at 30% 80%, rgba(52, 211, 153, 0.16), transparent 55%)',
+        nodes: [
+            {
+                id: 'dpk_base', name: '霜風山麓大營', type: '遠征營地', isVein: false,
+                x: 10, y: 50, conquered: true, apCost: 0, power: 2200, crystals: 350, gold: 600,
+                desc: '建立在雪線之下的防風要塞，為攀登龍吼峰脈的軍團提供補給。',
+                enemies: [], connections: ['dpk_vein_1', 'dpk_vein_2']
+            },
+            {
+                id: 'dpk_vein_1', name: '萬年玄冰晶脈', type: '普通礦脈', isVein: true, veinTier: 'normal', veinIcon: '❄️',
+                x: 24, y: 22, conquered: false, apCost: 2, power: 2900, crystals: 480, gold: 680,
+                desc: '封存於極寒冰川中的水屬性晶石礦脈，晶瑩剔透且魔力充沛。',
+                enemies: [{ templateId: 'isolde', lv: 6 }, { templateId: 'lyra', lv: 6 }],
+                connections: ['dpk_base', 'dpk_vein_3', 'dpk_pass']
+            },
+            {
+                id: 'dpk_vein_2', name: '雲海風鳴靈石脈', type: '普通礦脈', isVein: true, veinTier: 'normal', veinIcon: '🍃',
+                x: 24, y: 78, conquered: false, apCost: 2, power: 2950, crystals: 450, gold: 750,
+                desc: '受高空烈風千年吹拂形成的風屬性靈石礦床，開採效率極高。',
+                enemies: [{ templateId: 'lyra', lv: 6 }, { templateId: 'morrigan', lv: 6 }],
+                connections: ['dpk_base', 'dpk_vein_4', 'dpk_pass']
+            },
+            {
+                id: 'dpk_pass', name: '龍脊風暴隘口', type: '戰略據點', isVein: false,
+                x: 41, y: 50, conquered: false, apCost: 3, power: 3350, crystals: 620, gold: 880,
+                desc: '形似巨龍脊椎的險峻山脊，唯有最強大的遠征軍方能突破風暴封鎖。',
+                enemies: [{ templateId: 'aoli', lv: 6 }, { templateId: 'isolde', lv: 6 }, { templateId: 'seraphina', lv: 6 }],
+                connections: ['dpk_vein_1', 'dpk_vein_2', 'dpk_vein_3', 'dpk_vein_4', 'dpk_vein_5']
+            },
+            {
+                id: 'dpk_vein_3', name: '蒼穹龍鱗秘銀脈', type: '富饒結晶脈', isVein: true, veinTier: 'rich', veinIcon: '💠',
+                x: 49, y: 15, conquered: false, apCost: 3, power: 3600, crystals: 820, gold: 1050,
+                desc: '太古真龍蛻鱗之處孕育的稀有秘銀礦脈，閃耀著龍威光澤！',
+                enemies: [{ templateId: 'aoli', lv: 6 }, { templateId: 'valkyrie', lv: 6 }, { templateId: 'lyra', lv: 6 }],
+                connections: ['dpk_vein_1', 'dpk_pass', 'dpk_vein_6']
+            },
+            {
+                id: 'dpk_vein_4', name: '雷鳴琥珀晶礦', type: '富饒結晶脈', isVein: true, veinTier: 'rich', veinIcon: '⚡',
+                x: 49, y: 85, conquered: false, apCost: 3, power: 3650, crystals: 780, gold: 1180,
+                desc: '雷雲常年轟擊山峰凝結而成的雷霆琥珀礦，蘊含狂暴魔導能量。',
+                enemies: [{ templateId: 'selene', lv: 6 }, { templateId: 'seraphina', lv: 6 }, { templateId: 'galahad', lv: 7 }],
+                connections: ['dpk_vein_2', 'dpk_pass', 'dpk_vein_7']
+            },
+            {
+                id: 'dpk_vein_5', name: '古龍魔金寶庫脈', type: '富饒結晶脈', isVein: true, veinTier: 'rich', veinIcon: '🏆',
+                x: 64, y: 50, conquered: false, apCost: 3, power: 3900, crystals: 860, gold: 1450,
+                desc: '巨龍巢穴下方的天然魔金礦脈，金幣與晶石儲量令人目眩神迷！',
+                enemies: [{ templateId: 'aoli', lv: 7 }, { templateId: 'valkyrie', lv: 6 }, { templateId: 'aurelia', lv: 6 }],
+                connections: ['dpk_pass', 'dpk_vein_6', 'dpk_vein_7', 'dpk_throne']
+            },
+            {
+                id: 'dpk_vein_6', name: '太古龍魂源初脈', type: '傳說級源初礦脈', isVein: true, veinTier: 'legendary', veinIcon: '🐉',
+                x: 76, y: 18, conquered: false, apCost: 3, power: 4250, crystals: 1380, gold: 1750,
+                desc: '【傳說礦脈】龍脈靈氣最濃郁的極巔晶脈，開採時能聽見太古真龍的共鳴龍吟！',
+                enemies: [{ templateId: 'aoli', lv: 7 }, { templateId: 'selene', lv: 7 }, { templateId: 'isolde', lv: 7 }],
+                connections: ['dpk_vein_3', 'dpk_vein_5', 'dpk_throne']
+            },
+            {
+                id: 'dpk_vein_7', name: '星隕秘鑽巨礦脈', type: '傳說級源初礦脈', isVein: true, veinTier: 'legendary', veinIcon: '💎',
+                x: 76, y: 82, conquered: false, apCost: 3, power: 4300, crystals: 1450, gold: 1680,
+                desc: '【傳說礦脈】天外星辰墜落雪峰砸出的星鑽礦坑，萬源晶石產量冠絕群山！',
+                enemies: [{ templateId: 'valkyrie', lv: 7 }, { templateId: 'aoli', lv: 7 }, { templateId: 'morrigan', lv: 7 }],
+                connections: ['dpk_vein_4', 'dpk_vein_5', 'dpk_throne']
+            },
+            {
+                id: 'dpk_throne', name: '蒼穹龍皇神殿', type: '戰區要塞', isVein: false,
+                x: 90, y: 50, conquered: false, apCost: 4, power: 4650, crystals: 1300, gold: 1900,
+                desc: '矗立於世界之巔的龍族聖殿，太古龍姬敖璃在此考驗每一位征服者！',
+                enemies: [{ templateId: 'aoli', lv: 8 }, { templateId: 'valkyrie', lv: 7 }, { templateId: 'aurelia', lv: 7 }, { templateId: 'selene', lv: 7 }],
+                connections: ['dpk_vein_5', 'dpk_vein_6', 'dpk_vein_7']
+            }
+        ]
+    },
+
+    origin_forbidden: {
+        id: 'origin_forbidden',
+        name: '萬源禁地',
+        icon: '👑',
+        subtitle: '創世結晶碎裂的終極神域，七大源初聖脈環繞萬源聖殿！',
+        bgStyle: 'radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.24), transparent 65%), radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.22), transparent 55%)',
+        nodes: [
+            {
+                id: 'of_gate', name: '星界神門前哨', type: '終極營地', isVein: false,
+                x: 9, y: 50, conquered: true, apCost: 0, power: 3200, crystals: 500, gold: 800,
+                desc: '踏入創世神域的最後集結點，前方即是滿佈傳說礦脈的萬源禁地！',
+                enemies: [], connections: ['of_vein_1', 'of_vein_2', 'of_vein_3']
+            },
+            {
+                id: 'of_vein_1', name: '晨曦聖光結晶脈', type: '富饒結晶脈', isVein: true, veinTier: 'rich', veinIcon: '☀️',
+                x: 24, y: 18, conquered: false, apCost: 3, power: 4200, crystals: 980, gold: 1250,
+                desc: '純淨聖光凝結而成的神聖晶脈，閃耀著創世黎明的輝煌。',
+                enemies: [{ templateId: 'aurelia', lv: 8 }, { templateId: 'seraphina', lv: 8 }, { templateId: 'galahad', lv: 8 }],
+                connections: ['of_gate', 'of_vein_4', 'of_bastion']
+            },
+            {
+                id: 'of_vein_2', name: '混沌元素交匯脈', type: '富饒結晶脈', isVein: true, veinTier: 'rich', veinIcon: '🌀',
+                x: 24, y: 50, conquered: false, apCost: 3, power: 4300, crystals: 1020, gold: 1300,
+                desc: '風水火三元素高速旋轉交融形成的奇蹟礦床，產量極為龐大。',
+                enemies: [{ templateId: 'aoli', lv: 8 }, { templateId: 'isolde', lv: 8 }, { templateId: 'lyra', lv: 8 }],
+                connections: ['of_gate', 'of_bastion']
+            },
+            {
+                id: 'of_vein_3', name: '永夜暗星礦脈', type: '富饒結晶脈', isVein: true, veinTier: 'rich', veinIcon: '🌙',
+                x: 24, y: 82, conquered: false, apCost: 3, power: 4250, crystals: 990, gold: 1280,
+                desc: '吞噬星輝而誕生的暗夜礦脈，蘊含深不可測的魔導精粹。',
+                enemies: [{ templateId: 'lilith', lv: 8 }, { templateId: 'morrigan', lv: 8 }, { templateId: 'isolde', lv: 8 }],
+                connections: ['of_gate', 'of_vein_5', 'of_bastion']
+            },
+            {
+                id: 'of_bastion', name: '神魔英靈審判庭', type: '戰略據點', isVein: false,
+                x: 44, y: 50, conquered: false, apCost: 3, power: 4800, crystals: 1200, gold: 1600,
+                desc: '通往萬源聖殿的最後一道防線，四大陣營巔峰英靈聯手鎮守！',
+                enemies: [{ templateId: 'valkyrie', lv: 8 }, { templateId: 'aurelia', lv: 8 }, { templateId: 'lilith', lv: 8 }, { templateId: 'aoli', lv: 8 }],
+                connections: ['of_vein_1', 'of_vein_2', 'of_vein_3', 'of_vein_4', 'of_vein_5', 'of_vein_6', 'of_vein_7']
+            },
+            {
+                id: 'of_vein_4', name: '十二星宮銀河脈', type: '傳說級源初礦脈', isVein: true, veinTier: 'legendary', veinIcon: '🌌',
+                x: 52, y: 15, conquered: false, apCost: 3, power: 5100, crystals: 1680, gold: 2100,
+                desc: '【傳說礦脈】倒映整片星海的銀河源初脈，每次開採皆有海量萬源晶石湧出！',
+                enemies: [{ templateId: 'selene', lv: 9 }, { templateId: 'aurelia', lv: 8 }, { templateId: 'valkyrie', lv: 8 }],
+                connections: ['of_vein_1', 'of_bastion', 'of_sanctum']
+            },
+            {
+                id: 'of_vein_5', name: '無盡黃金聖杯脈', type: '傳說級源初礦脈', isVein: true, veinTier: 'legendary', veinIcon: '🏺',
+                x: 52, y: 85, conquered: false, apCost: 3, power: 5150, crystals: 1550, gold: 2600,
+                desc: '【傳說礦脈】傳說中創世神遺落的聖杯所化之礦脈，源源不絕噴湧無盡財富！',
+                enemies: [{ templateId: 'valkyrie', lv: 9 }, { templateId: 'lilith', lv: 8 }, { templateId: 'seraphina', lv: 9 }],
+                connections: ['of_vein_3', 'of_bastion', 'of_sanctum']
+            },
+            {
+                id: 'of_vein_6', name: '太初神髓結晶脈', type: '傳說級源初礦脈', isVein: true, veinTier: 'legendary', veinIcon: '💠',
+                x: 70, y: 26, conquered: false, apCost: 4, power: 5450, crystals: 1950, gold: 2400,
+                desc: '【傳說礦脈】創世神髓凝結的至高礦脈，純度高達百分之百的萬源結晶！',
+                enemies: [{ templateId: 'aoli', lv: 9 }, { templateId: 'aurelia', lv: 9 }, { templateId: 'selene', lv: 9 }],
+                connections: ['of_bastion', 'of_sanctum']
+            },
+            {
+                id: 'of_vein_7', name: '終焉魔源核心脈', type: '傳說級源初礦脈', isVein: true, veinTier: 'legendary', veinIcon: '🔮',
+                x: 70, y: 74, conquered: false, apCost: 4, power: 5500, crystals: 2050, gold: 2500,
+                desc: '【傳說礦脈】與聖髓礦脈雙生共鳴的終焉魔源脈，蘊藏毀天滅地的結晶能量！',
+                enemies: [{ templateId: 'lilith', lv: 9 }, { templateId: 'valkyrie', lv: 9 }, { templateId: 'morrigan', lv: 9 }],
+                connections: ['of_bastion', 'of_sanctum']
+            },
+            {
+                id: 'of_sanctum', name: '萬源聖殿・創世核心', type: '終極聖域', isVein: true, veinTier: 'legendary', veinIcon: '👑',
+                x: 89, y: 50, conquered: false, apCost: 4, power: 6200, crystals: 3000, gold: 4000,
+                desc: '【至高創世礦脈聖殿】世界本源「萬源結晶」本體所在！佔領後將統御整片蒂爾大陸與所有靈脈！',
+                enemies: [{ templateId: 'valkyrie', lv: 10 }, { templateId: 'aoli', lv: 10 }, { templateId: 'aurelia', lv: 10 }, { templateId: 'lilith', lv: 10 }],
+                connections: ['of_vein_4', 'of_vein_5', 'of_vein_6', 'of_vein_7']
+            }
+        ]
+    }
+};
+
+const VEIN_TIER_META = {
+    normal: {
+        label: '普通礦脈',
+        badgeClass: 'bg-sky-900/90 text-sky-200 border border-sky-400/50',
+        nodeClass: 'border-sky-400 bg-sky-950/90 text-sky-200 shadow-[0_0_12px_rgba(56,189,248,0.45)]'
+    },
+    rich: {
+        label: '富饒結晶脈',
+        badgeClass: 'bg-cyan-900/90 text-cyan-200 border border-cyan-300/70',
+        nodeClass: 'border-cyan-300 bg-cyan-950/95 text-cyan-100 vein-node-rich'
+    },
+    legendary: {
+        label: '傳說源初脈',
+        badgeClass: 'bg-gradient-to-r from-amber-700 to-fuchsia-800 text-amber-100 border border-amber-300',
+        nodeClass: 'border-amber-300 bg-gradient-to-br from-amber-950 via-purple-950 to-fuchsia-950 text-amber-200 vein-node-legendary'
+    }
+};
+
+const RANDOM_EVENTS = [
+    {
+        title: '✨ 地下靈脈大噴發！',
+        desc: '勘探隊在礦坑深處鑿穿了高壓結晶氣囊，海量萬源晶石與金幣噴湧而出！',
+        reward: (s) => { s.crystals += 450; s.gold += 700; return '獲得 💎+450 萬源晶石、🪙+700 魔導金幣！'; }
+    },
+    {
+        title: '🧝 遠古矮人礦工團的饋贈',
+        desc: '傳奇矮人匠師讚賞您的領地建設，無償傳授高效採礦秘術並贈送補給！',
+        reward: (s) => { s.ap = Math.min(s.maxAp, s.ap + 4); s.gold += 600; return '恢復 ⚡+4 行動力、獲得 🪙+600 魔導金幣！'; }
+    },
+    {
+        title: '🌠 星界流星雨墜落礦區',
+        desc: '璀璨的星界隕石落入我方控制區，凝結成純度極高的星輝原礦！',
+        reward: (s) => { s.crystals += 600; return '獲得 💎+600 萬源晶石！'; }
+    },
+    {
+        title: '⚔️ 英靈戰意共鳴演習',
+        desc: '出戰編隊在靈脈旁進行魔導冥想，全員等級獲得額外實戰精進！',
+        reward: (s) => {
+            s.ownedHeroes.forEach(h => { if (s.squad.includes(h.uid)) h.lv += 1; });
+            return '出戰編隊全員等級 +1 級！';
+        }
+    }
+];
+
+/**
+ * ============================================================================
+ * 3. 主遊戲狀態與核心邏輯控制器 (支援多地圖、礦脈共振、駐軍掛機與自動存檔)
+ * ============================================================================
+ */
+const SAVE_KEY = 'pan_origin_record_save_v2';
+
+const Game = {
+    selectedFactionId: null,
+    idleTimer: null,
+    state: {
+        faction: null,
+        cmdLv: 1,
+        ap: 14,
+        maxAp: 14,
+        crystals: 1800,
+        gold: 3000,
+        ownedHeroes: [], // { uid, templateId, lv, stars }
+        squad: [], // array of hero uids (max 4)
+        regions: JSON.parse(JSON.stringify(WORLD_REGIONS)),
+        currentRegionId: 'dawn_plains',
+        selectedNodeId: 'dp_vein_1',
+        garrisonedNodes: {}, // { [nodeId]: heroUid }
+        logs: []
+    },
+
+    init() {
+        this.initParticles();
+        if (this.loadSaveData()) {
+            document.getElementById('faction-select-screen').classList.add('hidden');
+            document.getElementById('main-game-ui').classList.remove('hidden');
+            const f = this.state.faction;
+            document.getElementById('header-faction-icon').innerHTML = f.svgIcon;
+            document.getElementById('header-faction-name').textContent = f.name;
+            document.getElementById('header-faction-buff').textContent = f.buffDesc;
+            this.addLog(`歡迎回來，指揮官！已讀取【${f.name}】遠征存檔。`);
+            this.updateAllUI();
+            this.startIdleProductionLoop();
+        } else {
+            this.renderFactionSelection();
+        }
+    },
+
+    saveData() {
+        try {
+            if (!this.state.faction) return;
+            localStorage.setItem(SAVE_KEY, JSON.stringify(this.state));
+        } catch (e) {
+            // 忽略隱私模式存檔限制
+        }
+    },
+
+    loadSaveData() {
+        try {
+            const raw = localStorage.getItem(SAVE_KEY);
+            if (!raw) return false;
+            const parsed = JSON.parse(raw);
+            if (!parsed || !parsed.faction || !parsed.regions) return false;
+            this.state = {
+                ...this.state,
+                ...parsed,
+                garrisonedNodes: parsed.garrisonedNodes || {}
+            };
+            return true;
+        } catch (e) {
+            return false;
+        }
+    },
+
+    resetSaveData() {
+        SoundFX.playClick();
+        localStorage.removeItem(SAVE_KEY);
+        location.reload();
+    },
+
+    getCurrentRegion() {
+        return this.state.regions[this.state.currentRegionId] || this.state.regions.dawn_plains;
+    },
+
+    // 計算指定戰區的礦脈掌控數與「區域礦脈連鎖共振」加成倍率
+    getRegionMiningStats(regionId = this.state.currentRegionId) {
+        const region = this.state.regions[regionId];
+        const allVeins = region.nodes.filter(n => n.isVein);
+        const conqueredVeins = allVeins.filter(n => n.conquered);
+        // 每佔領 1 座礦脈，觸發 +15% 區域礦脈連鎖共振
+        const resonanceBonusPct = conqueredVeins.length * 15;
+        const resonanceMult = 1 + resonanceBonusPct / 100;
+        return {
+            totalVeins: allVeins.length,
+            conqueredVeins: conqueredVeins.length,
+            resonanceBonusPct,
+            resonanceMult
+        };
+    },
+
+    // 計算全大陸所有已佔領據點與礦脈的每 10 秒掛機產出
+    getGlobalIdleIncomePerTick() {
+        let goldTick = 0;
+        let crystalTick = 0;
+        Object.values(this.state.regions).forEach(reg => {
+            const { resonanceMult } = this.getRegionMiningStats(reg.id);
+            reg.nodes.forEach(n => {
+                if (!n.conquered) return;
+                const garrisonMult = this.state.garrisonedNodes[n.id] ? 1.5 : 1.0;
+                const baseGold = n.isVein ? Math.round(n.gold * 0.08) : 25;
+                const baseCrystal = n.isVein ? Math.round(n.crystals * 0.06) : 10;
+                goldTick += Math.round(baseGold * resonanceMult * garrisonMult);
+                crystalTick += Math.round(baseCrystal * resonanceMult * garrisonMult);
+            });
+        });
+        return { goldTick, crystalTick };
+    },
+
+    startIdleProductionLoop() {
+        if (this.idleTimer) clearInterval(this.idleTimer);
+        this.idleTimer = setInterval(() => {
+            if (!this.state.faction) return;
+            const { goldTick, crystalTick } = this.getGlobalIdleIncomePerTick();
+            if (goldTick > 0 || crystalTick > 0) {
+                this.state.gold += goldTick;
+                this.state.crystals += crystalTick;
+                document.getElementById('ui-crystals').textContent = this.state.crystals.toLocaleString();
+                document.getElementById('ui-gold').textContent = this.state.gold.toLocaleString();
+                this.saveData();
+            }
+        }, 10000);
+    },
+
+    // 初始化星空與魔法粒子特效
+    initParticles() {
+        const canvas = document.getElementById('bg-particles');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        const particles = Array.from({ length: 55 }, () => ({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            r: Math.random() * 2 + 0.6,
+            vx: (Math.random() - 0.5) * 0.25,
+            vy: -Math.random() * 0.35 - 0.1,
+            alpha: Math.random() * 0.7 + 0.2,
+            gold: Math.random() > 0.45
+        }));
+
+        const animate = () => {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.y < 0) { p.y = height; p.x = Math.random() * width; }
+                if (p.x < 0) p.x = width;
+                if (p.x > width) p.x = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = p.gold
+                    ? `rgba(251, 191, 36, ${p.alpha})`
+                    : `rgba(192, 132, 252, ${p.alpha})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        };
+        animate();
+    },
+
+    // 顯示 Toast 提示訊息 (取代 alert)
+    showToast(msg, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const el = document.createElement('div');
+        const colors = {
+            info: 'border-amber-400 bg-slate-900/95 text-amber-100',
+            success: 'border-emerald-400 bg-emerald-950/95 text-emerald-100',
+            error: 'border-rose-500 bg-rose-950/95 text-rose-100'
+        };
+        el.className = `px-4 py-2.5 rounded-xl border ${colors[type] || colors.info} shadow-2xl text-xs sm:text-sm font-bold backdrop-blur-md transition-all duration-300 transform translate-y-0 opacity-100 text-center`;
+        el.textContent = msg;
+        container.appendChild(el);
+        setTimeout(() => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(-10px)';
+            setTimeout(() => el.remove(), 300);
+        }, 2600);
+    },
+
+    addLog(text) {
+        const now = new Date();
+        const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        this.state.logs.unshift(`[${timeStr}] ${text}`);
+        if (this.state.logs.length > 30) this.state.logs.pop();
+        this.renderLogs();
+    },
+
+    renderLogs() {
+        const box = document.getElementById('strategy-log-list');
+        if (!box) return;
+        box.innerHTML = this.state.logs.map(l => `<div class="border-l-2 border-amber-500/50 pl-2 py-0.5">${l}</div>`).join('');
+    },
+
+    // 渲染開局陣營選擇卡片
+    renderFactionSelection() {
+        const container = document.getElementById('faction-cards-container');
+        container.innerHTML = Object.values(FACTIONS).map(f => {
+            const hero = HERO_TEMPLATES.find(h => h.id === f.starterHero);
+            return `
+                <div onclick="Game.selectFaction('${f.id}')" id="faction-card-${f.id}"
+                     class="faction-card cursor-pointer rounded-2xl p-4 sm:p-5 bg-gradient-to-b ${f.bgGradient} border-2 border-white/15 hover:border-amber-400/80 transition-all duration-300 flex flex-col justify-between shadow-xl">
+                    <div>
+                        <div class="w-14 h-14 mx-auto mb-3">${f.svgIcon}</div>
+                        <div class="text-[10px] tracking-widest text-amber-300/80 uppercase">${f.sub}</div>
+                        <h3 class="font-epic text-xl sm:text-2xl font-black text-white mb-2">${f.name}</h3>
+                        <p class="text-xs text-purple-100/80 leading-relaxed mb-3">${f.desc}</p>
+                    </div>
+                    <div class="space-y-2 pt-2 border-t border-white/15 text-left">
+                        <div class="text-[11px] text-amber-200 bg-black/40 p-2 rounded-lg border border-amber-500/30">
+                            <span class="font-bold text-amber-400">陣營光環：</span>${f.buffDesc}
+                        </div>
+                        <div class="text-[11px] text-purple-200 flex items-center justify-between bg-black/40 px-2.5 py-1.5 rounded-lg">
+                            <span>初始 SSR 英靈</span>
+                            <span class="font-bold text-amber-300">${hero.emblem} ${hero.name}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    },
+
+    selectFaction(factionId) {
+        SoundFX.playClick();
+        this.selectedFactionId = factionId;
+        document.querySelectorAll('.faction-card').forEach(c => {
+            c.classList.remove('gold-border-bright', 'scale-[1.03]');
+        });
+        const chosen = document.getElementById(`faction-card-${factionId}`);
+        if (chosen) {
+            chosen.classList.add('gold-border-bright', 'scale-[1.03]');
+        }
+        document.getElementById('btn-confirm-faction').disabled = false;
+    },
+
+    confirmFaction() {
+        if (!this.selectedFactionId) return;
+        SoundFX.playVictory();
+        const faction = FACTIONS[this.selectedFactionId];
+        this.state.faction = faction;
+
+        // 給予初始陣營 SSR 英雄 + 3 名初始夥伴組成 4 人小隊
+        const starterIds = [faction.starterHero, 'seraphina', 'isolde', 'lyra'];
+        // 避免重複
+        const uniqueStarters = [...new Set(starterIds)];
+        if (uniqueStarters.length < 4) uniqueStarters.push('galahad');
+
+        uniqueStarters.forEach((tid, idx) => {
+            const uid = 'hero_' + (idx + 1);
+            this.state.ownedHeroes.push({
+                uid,
+                templateId: tid,
+                lv: tid === faction.starterHero ? 3 : 2,
+                stars: tid === faction.starterHero ? 2 : 1
+            });
+            this.state.squad.push(uid);
+        });
+
+        // 切換畫面
+        document.getElementById('faction-select-screen').classList.add('hidden');
+        document.getElementById('main-game-ui').classList.remove('hidden');
+
+        // 更新頂部陣營資訊
+        document.getElementById('header-faction-icon').innerHTML = faction.svgIcon;
+        document.getElementById('header-faction-name').textContent = faction.name;
+        document.getElementById('header-faction-buff').textContent = faction.buffDesc;
+
+        this.addLog(`指揮官已宣誓效忠【${faction.name}】，初始遠征軍集結完畢！`);
+        this.addLog(`提示：四大戰區共有超過 25 座高產礦脈等待開採，佔領越多礦脈「連鎖共振」加成越高！`);
+        this.updateAllUI();
+        this.saveData();
+        this.startIdleProductionLoop();
+    },
+
+    // 計算單一英雄實際屬性
+    getHeroStats(heroInstance) {
+        const tpl = HERO_TEMPLATES.find(t => t.id === heroInstance.templateId);
+        const lvMult = 1 + (heroInstance.lv - 1) * 0.16;
+        const starMult = 1 + (heroInstance.stars - 1) * 0.22;
+        const hp = Math.round(tpl.hp * lvMult * starMult);
+        const atk = Math.round(tpl.atk * lvMult * starMult);
+        const def = Math.round(tpl.def * lvMult * starMult);
+        const power = Math.round(hp * 0.4 + atk * 2.2 + def * 1.5);
+        return { ...tpl, ...heroInstance, maxHp: hp, atk, def, power };
+    },
+
+    getTeamTotalPower() {
+        return this.state.squad.reduce((sum, uid) => {
+            const h = this.state.ownedHeroes.find(x => x.uid === uid);
+            return sum + (h ? this.getHeroStats(h).power : 0);
+        }, 0);
+    },
+
+    updateAllUI() {
+        document.getElementById('ui-cmd-lv').textContent = this.state.cmdLv;
+        document.getElementById('ui-ap').textContent = this.state.ap;
+        document.getElementById('ui-crystals').textContent = this.state.crystals.toLocaleString();
+        document.getElementById('ui-gold').textContent = this.state.gold.toLocaleString();
+        document.getElementById('ui-team-power').textContent = this.getTeamTotalPower().toLocaleString();
+        document.getElementById('ui-owned-count').textContent = this.state.ownedHeroes.length;
+
+        const region = this.getCurrentRegion();
+        const conqueredCount = region.nodes.filter(n => n.conquered).length;
+        const miningStats = this.getRegionMiningStats(region.id);
+        const idleStats = this.getGlobalIdleIncomePerTick();
+
+        document.getElementById('ui-region-title').textContent = `${region.icon} ${region.name}`;
+        document.getElementById('ui-region-conquered').textContent = conqueredCount;
+        document.getElementById('ui-region-total').textContent = region.nodes.length;
+        document.getElementById('ui-vein-count').textContent = `${miningStats.conqueredVeins}/${miningStats.totalVeins}`;
+        document.getElementById('ui-mining-resonance').textContent = `⚡ 礦脈共振加成 +${miningStats.resonanceBonusPct}%`;
+        document.getElementById('ui-idle-rate').textContent = `全大陸掛機: +${idleStats.goldTick}🪙 +${idleStats.crystalTick}💎 /10秒`;
+
+        this.renderRegionTabs();
+        this.renderMap();
+        this.renderNodeDetail(this.state.selectedNodeId);
+        this.renderRoster();
+        this.renderCodex();
+        this.saveData();
+    },
+
+    renderRegionTabs() {
+        const bar = document.getElementById('region-tabs-bar');
+        if (!bar) return;
+        bar.innerHTML = Object.values(this.state.regions).map(reg => {
+            const active = reg.id === this.state.currentRegionId;
+            const veins = reg.nodes.filter(n => n.isVein);
+            const ownedVeins = veins.filter(n => n.conquered).length;
+            return `
+                <button onclick="Game.switchRegion('${reg.id}')"
+                    class="px-2.5 py-1.5 rounded-xl text-xs font-epic font-bold transition flex items-center gap-1 border ${active ? 'gold-border-bright bg-amber-950/80 text-amber-200' : 'border-purple-500/35 bg-slate-900/80 text-purple-200 hover:border-amber-400/60'}">
+                    <span>${reg.icon}</span>
+                    <span>${reg.name}</span>
+                    <span class="text-[10px] px-1 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/40">⛏️${ownedVeins}/${veins.length}</span>
+                </button>
+            `;
+        }).join('');
+    },
+
+    switchRegion(regionId) {
+        if (!this.state.regions[regionId]) return;
+        SoundFX.playClick();
+        this.state.currentRegionId = regionId;
+        const reg = this.getCurrentRegion();
+        const firstUnconquered = reg.nodes.find(n => !n.conquered) || reg.nodes[0];
+        this.state.selectedNodeId = firstUnconquered.id;
+        this.updateAllUI();
+    },
+
+    switchTab(tabName) {
+        SoundFX.playClick();
+        document.querySelectorAll('.tab-view').forEach(v => v.classList.add('hidden'));
+        document.getElementById(`view-${tabName}`).classList.remove('hidden');
+
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('gold-border-bright'));
+        document.getElementById(`tab-btn-${tabName}`).classList.add('gold-border-bright');
+        this.updateAllUI();
+    },
+
+    toggleModal(modalId, show) {
+        SoundFX.playClick();
+        const el = document.getElementById(modalId);
+        if (show) el.classList.remove('hidden');
+        else el.classList.add('hidden');
+    },
+
+    recoverAP() {
+        if (this.state.ap >= this.state.maxAp) {
+            this.showToast('行動力已滿，無需補給！', 'info');
+            return;
+        }
+        if (this.state.gold < 100) {
+            this.showToast('魔導金幣不足 100，無法購買行軍補給！', 'error');
+            return;
+        }
+        SoundFX.playClick();
+        this.state.gold -= 100;
+        this.state.ap = Math.min(this.state.maxAp, this.state.ap + 5);
+        this.showToast('消耗 100 金幣，行動力恢復 +5 點！', 'success');
+        this.updateAllUI();
+    },
+
+    triggerRandomEvent() {
+        if (this.state.ap < 1) {
+            this.showToast('探索戰場奇遇需要消耗 1 點行動力！', 'error');
+            return;
+        }
+        SoundFX.playSummonSparkle(true);
+        this.state.ap -= 1;
+        const ev = RANDOM_EVENTS[Math.floor(Math.random() * RANDOM_EVENTS.length)];
+        const resultText = ev.reward(this.state);
+        this.showToast(`${ev.title} ${resultText}`, 'success');
+        this.addLog(`【奇遇】${ev.title}：${ev.desc}（${resultText}）`);
+        this.updateAllUI();
+    },
+
+    // 一鍵爆採全大陸所有已佔領礦脈與領地稅收（含區域共振加成與採礦暴擊）
+    mineAllVeins() {
+        let totalGold = 0;
+        let totalCrystals = 0;
+        let veinCount = 0;
+        let nodeCount = 0;
+
+        Object.values(this.state.regions).forEach(reg => {
+            const { resonanceMult } = this.getRegionMiningStats(reg.id);
+            reg.nodes.forEach(n => {
+                if (!n.conquered) return;
+                nodeCount += 1;
+                const garrisonMult = this.state.garrisonedNodes[n.id] ? 1.5 : 1.0;
+                if (n.isVein) {
+                    veinCount += 1;
+                    totalCrystals += Math.round(n.crystals * 0.45 * resonanceMult * garrisonMult);
+                    totalGold += Math.round(n.gold * 0.45 * resonanceMult * garrisonMult);
+                } else {
+                    totalCrystals += Math.round(n.crystals * 0.25 * garrisonMult);
+                    totalGold += Math.round(n.gold * 0.25 * garrisonMult);
+                }
+            });
+        });
+
+        // 25% 機率觸發「源初採礦大暴擊 ×1.5」
+        const isCrit = Math.random() < 0.28;
+        if (isCrit) {
+            totalGold = Math.round(totalGold * 1.5);
+            totalCrystals = Math.round(totalCrystals * 1.5);
+        }
+
+        SoundFX.playSummonSparkle(isCrit);
+        this.state.gold += totalGold;
+        this.state.crystals += totalCrystals;
+
+        const critTag = isCrit ? '💥【採礦大暴擊 ×1.5】' : '⛏️【全大陸礦脈開採】';
+        this.showToast(`${critTag} 啟動 ${veinCount} 座礦脈，獲得 💎+${totalCrystals.toLocaleString()}、🪙+${totalGold.toLocaleString()}！`, 'success');
+        this.addLog(`${critTag} 聯合開採了 ${veinCount} 座礦脈與 ${nodeCount} 座領地，進帳 ${totalCrystals.toLocaleString()} 萬源晶石、${totalGold.toLocaleString()} 魔導金幣！`);
+        this.updateAllUI();
+    },
+
+    toggleGarrison(nodeId) {
+        SoundFX.playClick();
+        if (this.state.garrisonedNodes[nodeId]) {
+            delete this.state.garrisonedNodes[nodeId];
+            this.showToast('已撤回該礦脈的駐守英靈。', 'info');
+        } else {
+            const leaderUid = this.state.squad[0] || (this.state.ownedHeroes[0] && this.state.ownedHeroes[0].uid);
+            if (!leaderUid) return;
+            this.state.garrisonedNodes[nodeId] = leaderUid;
+            const hInst = this.state.ownedHeroes.find(h => h.uid === leaderUid);
+            const tpl = HERO_TEMPLATES.find(t => t.id === hInst.templateId);
+            this.showToast(`已派遣【${tpl.name}】駐守督採，該礦脈產量提升至 150%！`, 'success');
+        }
+        this.updateAllUI();
+    },
+
+    // ==================== 大陸沙盤地圖渲染 ====================
+    renderMap() {
+        const edgesGroup = document.getElementById('map-edges-group');
+        const nodesLayer = document.getElementById('map-nodes-layer');
+        const biomeBg = document.getElementById('map-biome-bg');
+        if (!edgesGroup || !nodesLayer) return;
+
+        const region = this.getCurrentRegion();
+        if (biomeBg) biomeBg.style.background = region.bgStyle;
+
+        // 繪製據點連線
+        const drawnPairs = new Set();
+        let linesHtml = '';
+        region.nodes.forEach(node => {
+            node.connections.forEach(targetId => {
+                const pairKey = [node.id, targetId].sort().join('-');
+                if (drawnPairs.has(pairKey)) return;
+                drawnPairs.add(pairKey);
+
+                const target = region.nodes.find(n => n.id === targetId);
+                if (!target) return;
+                const x1 = node.x * 8;
+                const y1 = node.y * 5;
+                const x2 = target.x * 8;
+                const y2 = target.y * 5;
+                const isUnlocked = node.conquered || target.conquered;
+                const isVeinLink = node.isVein && target.isVein && node.conquered && target.conquered;
+                linesHtml += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" 
+                    stroke="${isVeinLink ? '#22d3ee' : isUnlocked ? '#fbbf24' : 'rgba(168,85,247,0.32)'}" 
+                    stroke-width="${isVeinLink ? '2.8' : isUnlocked ? '2.2' : '1.4'}" 
+                    stroke-dasharray="${isUnlocked ? 'none' : '5 5'}" />`;
+            });
+        });
+        edgesGroup.innerHTML = linesHtml;
+
+        // 繪製據點與密集礦脈節點
+        nodesLayer.innerHTML = region.nodes.map(node => {
+            const isSelected = node.id === this.state.selectedNodeId;
+            const isGarrisoned = !!this.state.garrisonedNodes[node.id];
+
+            let statusColor = '';
+            let icon = '';
+
+            if (node.isVein) {
+                const tierMeta = VEIN_TIER_META[node.veinTier || 'normal'];
+                icon = node.veinIcon || '💎';
+                statusColor = node.conquered
+                    ? `${tierMeta.nodeClass} ring-2 ring-emerald-400/80`
+                    : `${tierMeta.nodeClass} opacity-90`;
+            } else {
+                const isUlt = node.id.includes('sanctum') || node.id.includes('throne') || node.id.includes('citadel');
+                icon = node.apCost === 0 ? '🏰' : isUlt ? '👑' : node.conquered ? '🚩' : '⚔️';
+                statusColor = node.conquered
+                    ? 'border-emerald-400 bg-emerald-950/90 text-emerald-200 shadow-[0_0_15px_rgba(52,211,153,0.5)]'
+                    : isUlt
+                        ? 'border-amber-400 bg-amber-950/90 text-amber-200 shadow-[0_0_22px_rgba(251,191,36,0.75)]'
+                        : 'border-rose-400/80 bg-purple-950/90 text-rose-200 shadow-[0_0_14px_rgba(244,63,94,0.4)]';
+            }
+
+            const shortName = node.name.split('・')[0];
+            return `
+                <button onclick="Game.selectMapNode('${node.id}')"
+                    style="left: ${node.x}%; top: ${node.y}%;"
+                    class="node-ring absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center group cursor-pointer focus:outline-none ${isSelected ? 'z-20' : 'z-10'}">
+                    <div class="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full border-2 ${statusColor} ${isSelected ? 'ring-4 ring-amber-300 scale-110' : ''} flex items-center justify-center text-base sm:text-lg transition-all">
+                        ${icon}
+                        ${node.conquered ? '<span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border border-white text-[8px] flex items-center justify-center text-black font-black">✓</span>' : ''}
+                        ${isGarrisoned ? '<span class="absolute -top-1.5 -left-1.5 px-1 rounded bg-amber-400 text-black text-[8px] font-black shadow">駐</span>' : ''}
+                    </div>
+                    <span class="mt-0.5 px-1.5 py-0.5 rounded text-[9px] sm:text-[11px] font-bold whitespace-nowrap bg-black/85 border ${isSelected ? 'border-amber-400 text-amber-300' : node.isVein ? 'border-cyan-500/40 text-cyan-100' : 'border-white/15 text-purple-100'} shadow">
+                        ${shortName}
+                    </span>
+                </button>
+            `;
+        }).join('');
+    },
+
+    selectMapNode(nodeId) {
+        SoundFX.playClick();
+        this.state.selectedNodeId = nodeId;
+        this.renderMap();
+        this.renderNodeDetail(nodeId);
+    },
+
+    renderNodeDetail(nodeId) {
+        const region = this.getCurrentRegion();
+        const node = region.nodes.find(n => n.id === nodeId) || region.nodes[0];
+        if (!node) return;
+        this.state.selectedNodeId = node.id;
+
+        const { resonanceBonusPct, resonanceMult } = this.getRegionMiningStats(region.id);
+        const isGarrisoned = !!this.state.garrisonedNodes[node.id];
+        const garrisonMult = isGarrisoned ? 1.5 : 1.0;
+
+        document.getElementById('detail-node-type').textContent = node.type;
+        const veinTierBadge = document.getElementById('detail-vein-tier');
+        if (node.isVein) {
+            const tierMeta = VEIN_TIER_META[node.veinTier || 'normal'];
+            veinTierBadge.textContent = `${node.veinIcon} ${tierMeta.label}`;
+            veinTierBadge.className = `text-[11px] px-2 py-0.5 rounded font-bold ${tierMeta.badgeClass}`;
+        } else {
+            veinTierBadge.className = 'hidden';
+        }
+
+        const statusEl = document.getElementById('detail-node-status');
+        statusEl.textContent = node.conquered ? (isGarrisoned ? '● 已佔領 (駐軍督採中)' : '● 我方已佔領') : '● 敵對勢力盤踞';
+        statusEl.className = node.conquered ? 'text-xs font-bold text-emerald-400' : 'text-xs font-bold text-rose-400';
+
+        document.getElementById('detail-node-name').textContent = node.name;
+        document.getElementById('detail-node-desc').textContent = node.desc;
+        document.getElementById('detail-node-power').textContent = `推薦戰力: ${node.power.toLocaleString()}`;
+
+        const enemiesBox = document.getElementById('detail-node-enemies');
+        if (node.enemies.length === 0) {
+            enemiesBox.innerHTML = `<span class="text-emerald-300">聖輝守護結界運行中（無敵軍威脅）</span>`;
+        } else {
+            enemiesBox.innerHTML = node.enemies.map(e => {
+                const tpl = HERO_TEMPLATES.find(t => t.id === e.templateId);
+                const elInfo = ELEMENTS[tpl.element];
+                return `<span class="px-2 py-1 rounded bg-slate-900 border border-rose-500/40 text-purple-100 flex items-center gap-1">
+                    <span>${elInfo.icon}</span><span>${tpl.name}</span><span class="text-amber-300">Lv.${e.lv}</span>
+                </span>`;
+            }).join('');
+        }
+
+        const estCrystals = Math.round(node.crystals * (node.isVein ? resonanceMult * garrisonMult : 1));
+        const estGold = Math.round(node.gold * (node.isVein ? resonanceMult * garrisonMult : 1));
+        document.getElementById('detail-resonance-tag').textContent = node.isVein
+            ? `共振+${resonanceBonusPct}%${isGarrisoned ? ' · 駐軍×1.5' : ''}`
+            : '戰略要衝';
+
+        document.getElementById('detail-node-rewards').innerHTML = `
+            <span>💎 +${estCrystals.toLocaleString()} 萬源晶石</span>
+            <span>🪙 +${estGold.toLocaleString()} 魔導金幣</span>
+        `;
+
+        const actionsBox = document.getElementById('detail-node-actions');
+        if (node.apCost === 0) {
+            actionsBox.innerHTML = `<button onclick="Game.mineAllVeins()" class="btn-gold w-full py-2.5 rounded-xl text-sm font-bold">⛏️ 一鍵爆採全大陸礦脈與主城稅收</button>`;
+        } else if (node.conquered) {
+            actionsBox.innerHTML = `
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="Game.toggleGarrison('${node.id}')" class="btn-epic py-2.5 rounded-xl text-xs font-bold">
+                        ${isGarrisoned ? '🚩 解除駐軍督採' : '🛡️ 派遣駐軍 (+50%產量)'}
+                    </button>
+                    <button onclick="Game.startBattle('${node.id}')" class="btn-gold py-2.5 rounded-xl text-xs font-bold">
+                        ⚔️ 演武掃蕩 (⚡${node.apCost})
+                    </button>
+                </div>
+            `;
+        } else {
+            actionsBox.innerHTML = `
+                <button onclick="Game.startBattle('${node.id}')" class="btn-gold w-full py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2">
+                    <span>${node.isVein ? '⛏️ 出征奪取此礦脈' : '⚔️ 派遣遠征軍攻佔據點'}</span>
+                    <span class="px-2 py-0.5 rounded bg-black/40 text-emerald-300 text-xs">消耗 ⚡${node.apCost} AP</span>
+                </button>
+            `;
+        }
+    },
+
+    startBattle(nodeId) {
+        const region = this.getCurrentRegion();
+        const node = region.nodes.find(n => n.id === nodeId);
+        if (!node) return;
+        if (this.state.squad.length === 0) {
+            this.showToast('請先在「英雄編隊」中配置至少 1 名出戰英靈！', 'error');
+            return;
+        }
+        if (this.state.ap < node.apCost) {
+            this.showToast(`行動力不足！需要 ${node.apCost} 點 AP（可點擊頂部 +補給 恢復）`, 'error');
+            return;
+        }
+
+        SoundFX.playClick();
+        this.state.ap -= node.apCost;
+        this.updateAllUI();
+        Battle.init(node);
+    },
+
+    // ==================== 英雄編隊與養成渲染 ====================
+    renderRoster() {
+        const slotsBox = document.getElementById('active-squad-slots');
+        const gridBox = document.getElementById('owned-heroes-grid');
+        if (!slotsBox || !gridBox) return;
+
+        // 渲染 4 個出戰槽位
+        let slotsHtml = '';
+        for (let i = 0; i < 4; i++) {
+            const uid = this.state.squad[i];
+            const posLabel = i < 2 ? `前排 ${i + 1} 號位` : `後排 ${i + 1} 號位`;
+            if (uid) {
+                const hInst = this.state.ownedHeroes.find(h => h.uid === uid);
+                const hero = this.getHeroStats(hInst);
+                const el = ELEMENTS[hero.element];
+                slotsHtml += `
+                    <div onclick="Game.openHeroModal('${hero.uid}')" class="cursor-pointer rounded-2xl p-3 rarity-${hero.rarity} relative flex flex-col justify-between transition hover:scale-[1.02]">
+                        <div class="flex justify-between items-center text-[10px] mb-1">
+                            <span class="px-1.5 py-0.5 rounded bg-black/60 text-amber-300 font-bold">${posLabel}</span>
+                            <span class="px-1.5 py-0.5 rounded border ${el.bg} ${el.color}">${el.icon} ${el.name}</span>
+                        </div>
+                        <div class="text-center my-1.5">
+                            <div class="text-3xl sm:text-4xl mb-1 drop-shadow">${hero.emblem}</div>
+                            <div class="font-epic font-bold text-sm sm:text-base text-white">${hero.name}</div>
+                            <div class="text-[11px] text-amber-300">${'★'.repeat(hero.stars)} <span class="text-purple-200">Lv.${hero.lv}</span></div>
+                        </div>
+                        <div class="text-[11px] bg-black/50 rounded-lg px-2 py-1 flex justify-between text-purple-100">
+                            <span>戰力</span>
+                            <span class="font-bold text-amber-300">${hero.power}</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                slotsHtml += `
+                    <div class="rounded-2xl p-3 border-2 border-dashed border-amber-500/35 bg-slate-950/50 flex flex-col items-center justify-center min-h-[145px] text-center">
+                        <span class="text-xs text-amber-300/70 font-bold mb-1">${posLabel}</span>
+                        <span class="text-2xl opacity-40 mb-1">➕</span>
+                        <span class="text-[11px] text-slate-400">從下方英靈殿堂<br>點擊派遣上陣</span>
+                    </div>
+                `;
+            }
+        }
+        slotsBox.innerHTML = slotsHtml;
+
+        // 渲染全部擁有英雄
+        gridBox.innerHTML = this.state.ownedHeroes.map(hInst => {
+            const hero = this.getHeroStats(hInst);
+            const el = ELEMENTS[hero.element];
+            const inSquad = this.state.squad.includes(hero.uid);
+            return `
+                <div onclick="Game.openHeroModal('${hero.uid}')" class="cursor-pointer rounded-xl p-3 rarity-${hero.rarity} relative flex flex-col justify-between transition hover:-translate-y-1">
+                    ${inSquad ? '<span class="absolute -top-2 -right-2 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200 shadow">出戰中</span>' : ''}
+                    <div class="flex justify-between items-center text-[10px]">
+                        <span class="font-black px-1.5 py-0.5 rounded bg-black/60 text-amber-300">${hero.rarity}</span>
+                        <span class="${el.color}">${el.icon} ${el.name}</span>
+                    </div>
+                    <div class="text-center my-2">
+                        <div class="text-3xl mb-1">${hero.emblem}</div>
+                        <div class="font-epic font-bold text-sm text-white">${hero.name}</div>
+                        <div class="text-[10px] text-purple-200 truncate">${hero.title}</div>
+                        <div class="text-[11px] text-amber-300 mt-0.5">${'★'.repeat(hero.stars)} · Lv.${hero.lv}</div>
+                    </div>
+                    <div class="text-[11px] bg-black/55 rounded px-2 py-1 flex justify-between">
+                        <span class="text-slate-300">戰力</span>
+                        <span class="font-bold text-amber-300">${hero.power}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    },
+
+    openHeroModal(uid) {
+        SoundFX.playClick();
+        const hInst = this.state.ownedHeroes.find(h => h.uid === uid);
+        if (!hInst) return;
+        const hero = this.getHeroStats(hInst);
+        const el = ELEMENTS[hero.element];
+        const faction = FACTIONS[hero.faction];
+        const inSquad = this.state.squad.includes(uid);
+        const lvUpCost = hero.lv * 200;
+
+        document.getElementById('hero-modal-content').innerHTML = `
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 rounded-2xl rarity-${hero.rarity} flex items-center justify-center text-4xl shrink-0">
+                    ${hero.emblem}
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400 text-amber-300 text-xs font-black">${hero.rarity}</span>
+                        <span class="text-xs px-2 py-0.5 rounded border ${el.bg} ${el.color}">${el.icon} ${el.name}屬性</span>
+                        <span class="text-xs text-purple-300">${faction.name}</span>
+                    </div>
+                    <h3 class="font-epic text-2xl font-black text-white mt-1">${hero.name} <span class="text-sm font-normal text-amber-300">· ${hero.title}</span></h3>
+                    <div class="text-xs text-amber-400 mt-0.5">${'★'.repeat(hero.stars)} (星級覺醒) · 等級 Lv.${hero.lv}</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-4 gap-2 bg-slate-950/80 p-3 rounded-xl border border-amber-500/30 text-center mb-3">
+                <div><div class="text-[10px] text-slate-400">綜合戰力</div><div class="font-bold text-amber-300 text-sm">${hero.power}</div></div>
+                <div><div class="text-[10px] text-slate-400">最大生命</div><div class="font-bold text-emerald-300 text-sm">${hero.maxHp}</div></div>
+                <div><div class="text-[10px] text-slate-400">魔導攻擊</div><div class="font-bold text-rose-300 text-sm">${hero.atk}</div></div>
+                <div><div class="text-[10px] text-slate-400">護甲防禦</div><div class="font-bold text-sky-300 text-sm">${hero.def}</div></div>
+            </div>
+
+            <div class="space-y-2 mb-4 text-xs">
+                <div class="p-2.5 rounded-xl bg-purple-950/60 border border-purple-400/30">
+                    <div class="font-bold text-amber-300 mb-0.5">✨ 奧義技能：【${hero.ultName}】 (消耗 100 怒氣)</div>
+                    <p class="text-purple-100 leading-relaxed">${hero.ultDesc}</p>
+                </div>
+                <div class="p-2.5 rounded-xl bg-slate-900/70 border border-white/10 text-purple-200/85 italic">
+                    「${hero.lore}」
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+                <button onclick="Game.levelUpHero('${uid}')" class="btn-gold py-2.5 rounded-xl text-xs sm:text-sm font-bold">
+                    ⬆️ 魔導強化 (🪙 ${lvUpCost})
+                </button>
+                <button onclick="Game.toggleSquadMember('${uid}')" class="btn-epic py-2.5 rounded-xl text-xs sm:text-sm font-bold">
+                    ${inSquad ? '⬇️ 撤下出戰編隊' : '⚔️ 派遣加入編隊'}
+                </button>
+            </div>
+        `;
+        this.toggleModal('hero-detail-modal', true);
+    },
+
+    levelUpHero(uid) {
+        const hInst = this.state.ownedHeroes.find(h => h.uid === uid);
+        if (!hInst) return;
+        const cost = hInst.lv * 200;
+        if (this.state.gold < cost) {
+            this.showToast(`魔導金幣不足 ${cost}！可至大陸沙盤徵收稅收或攻佔據點。`, 'error');
+            return;
+        }
+        SoundFX.playSummonSparkle(false);
+        this.state.gold -= cost;
+        hInst.lv += 1;
+        this.showToast(`強化成功！等級提升至 Lv.${hInst.lv}！`, 'success');
+        this.updateAllUI();
+        this.openHeroModal(uid);
+    },
+
+    toggleSquadMember(uid) {
+        SoundFX.playClick();
+        const idx = this.state.squad.indexOf(uid);
+        if (idx !== -1) {
+            if (this.state.squad.length <= 1) {
+                this.showToast('遠征軍至少需要保留 1 名出戰英靈！', 'error');
+                return;
+            }
+            this.state.squad.splice(idx, 1);
+            this.showToast('已將該英靈調離出戰編隊。', 'info');
+        } else {
+            if (this.state.squad.length >= 4) {
+                this.showToast('出戰編隊已滿（最多 4 名），請先撤下一名英靈！', 'error');
+                return;
+            }
+            this.state.squad.push(uid);
+            this.showToast('英靈已加入出戰編隊！', 'success');
+        }
+        this.updateAllUI();
+        this.toggleModal('hero-detail-modal', false);
+    },
+
+    // ==================== 萬源召喚（抽卡系統） ====================
+    performSummon(count) {
+        const cost = count === 10 ? 1500 : 160;
+        if (this.state.crystals < cost) {
+            this.showToast(`萬源晶石不足 ${cost}！可前往大陸沙盤征戰或徵收稅收獲得。`, 'error');
+            return;
+        }
+
+        this.state.crystals -= cost;
+        const circle = document.getElementById('summon-circle-svg');
+        circle.classList.add('scale-125', 'brightness-150');
+        setTimeout(() => circle.classList.remove('scale-125', 'brightness-150'), 600);
+
+        const ssrPool = HERO_TEMPLATES.filter(h => h.rarity === 'SSR');
+        const srPool = HERO_TEMPLATES.filter(h => h.rarity === 'SR');
+        const rPool = HERO_TEMPLATES.filter(h => h.rarity === 'R');
+
+        const results = [];
+        let gotSSR = false;
+
+        for (let i = 0; i < count; i++) {
+            const roll = Math.random();
+            let chosenTpl;
+            if (roll < 0.14) {
+                chosenTpl = ssrPool[Math.floor(Math.random() * ssrPool.length)];
+                gotSSR = true;
+            } else if (roll < 0.54 || (count === 10 && i === 9)) {
+                chosenTpl = srPool[Math.floor(Math.random() * srPool.length)];
+            } else {
+                chosenTpl = rPool[Math.floor(Math.random() * rPool.length)];
+            }
+
+            // 檢查是否已擁有，若已擁有則提升星級（突破覺醒）
+            const existing = this.state.ownedHeroes.find(h => h.templateId === chosenTpl.id);
+            let isAwaken = false;
+            if (existing) {
+                existing.stars = Math.min(6, existing.stars + 1);
+                isAwaken = true;
+            } else {
+                const newUid = 'hero_' + Date.now() + '_' + i;
+                this.state.ownedHeroes.push({
+                    uid: newUid,
+                    templateId: chosenTpl.id,
+                    lv: 1,
+                    stars: 1
+                });
+            }
+            results.push({ tpl: chosenTpl, isAwaken });
+        }
+
+        SoundFX.playSummonSparkle(gotSSR);
+        this.addLog(`進行了 ${count} 次萬源星界召喚，獲得 ${results.map(r => `[${r.tpl.rarity}]${r.tpl.name}`).join('、')}！`);
+
+        const resArea = document.getElementById('summon-results-area');
+        const resGrid = document.getElementById('summon-cards-grid');
+        resArea.classList.remove('hidden');
+
+        resGrid.innerHTML = results.map(r => {
+            const el = ELEMENTS[r.tpl.element];
+            return `
+                <div class="rounded-xl p-2.5 rarity-${r.tpl.rarity} flex flex-col items-center justify-between text-center animate-float">
+                    <div class="w-full flex justify-between text-[10px]">
+                        <span class="font-black text-amber-300">${r.tpl.rarity}</span>
+                        <span>${el.icon}</span>
+                    </div>
+                    <div class="text-3xl my-1.5">${r.tpl.emblem}</div>
+                    <div class="font-epic font-bold text-xs sm:text-sm text-white">${r.tpl.name}</div>
+                    <div class="mt-1 text-[10px] px-1.5 py-0.5 rounded ${r.isAwaken ? 'bg-amber-500/30 text-amber-200 border border-amber-400/50' : 'bg-emerald-600/40 text-emerald-200'}">
+                        ${r.isAwaken ? '★ 星級覺醒 +1' : '✨ 新英靈契約'}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        this.updateAllUI();
+    },
+
+    // ==================== 英靈圖鑑渲染 ====================
+    renderCodex() {
+        const box = document.getElementById('codex-grid');
+        if (!box) return;
+        box.innerHTML = HERO_TEMPLATES.map(tpl => {
+            const owned = this.state.ownedHeroes.find(h => h.templateId === tpl.id);
+            const el = ELEMENTS[tpl.element];
+            const faction = FACTIONS[tpl.faction];
+            return `
+                <div class="rounded-2xl p-4 rarity-${tpl.rarity} ${owned ? '' : 'opacity-75'} flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="px-2 py-0.5 rounded bg-black/60 text-amber-300 text-xs font-black">${tpl.rarity}</span>
+                            <span class="text-xs text-purple-200">${faction.name} · ${el.icon}${el.name}</span>
+                        </div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="text-4xl">${tpl.emblem}</div>
+                            <div>
+                                <h4 class="font-epic text-lg font-bold text-white">${tpl.name}</h4>
+                                <div class="text-xs text-amber-300">${tpl.title} · ${tpl.role}</div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-purple-100/85 mb-2 leading-relaxed">${tpl.lore}</p>
+                    </div>
+                    <div class="bg-black/50 rounded-xl p-2.5 border border-amber-500/25 text-xs">
+                        <div class="font-bold text-amber-300 mb-0.5">奧義：【${tpl.ultName}】</div>
+                        <div class="text-purple-200/90 text-[11px]">${tpl.ultDesc}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+};
+
+/**
+ * ============================================================================
+ * 4. 回合制英雄奧義與元素克制戰鬥引擎
+ * ============================================================================
+ */
+const Battle = {
+    active: false,
+    node: null,
+    turn: 1,
+    autoMode: true,
+    speedMult: 1,
+    allies: [],
+    enemies: [],
+    selectedTargetId: null,
+    timer: null,
+
+    init(node) {
+        this.active = true;
+        this.node = node;
+        this.turn = 1;
+        this.selectedTargetId = null;
+
+        const factionId = Game.state.faction.id;
+
+        // 建立我方戰鬥單位
+        this.allies = Game.state.squad.map((uid, idx) => {
+            const hInst = Game.state.ownedHeroes.find(h => h.uid === uid);
+            const stats = Game.getHeroStats(hInst);
+            let maxHp = stats.maxHp;
+            let atk = stats.atk;
+            let startNp = 30;
+
+            // 套用陣營專屬被動加成
+            if (factionId === 'primordial') maxHp = Math.round(maxHp * 1.15);
+            if (factionId === 'empire') { atk = Math.round(atk * 1.15); startNp = 55; }
+            if (factionId === 'sacred' && stats.element === 'light') atk = Math.round(atk * 1.15);
+
+            return {
+                uid: stats.uid,
+                side: 'ally',
+                pos: idx,
+                name: stats.name,
+                emblem: stats.emblem,
+                element: stats.element,
+                rarity: stats.rarity,
+                maxHp,
+                hp: maxHp,
+                atk,
+                def: stats.def,
+                np: startNp,
+                ultName: stats.ultName,
+                ultType: stats.ultType,
+                ultMult: stats.ultMult
+            };
+        });
+
+        // 建立敵方戰鬥單位
+        this.enemies = node.enemies.map((e, idx) => {
+            const tpl = HERO_TEMPLATES.find(t => t.id === e.templateId);
+            const lvMult = 1 + (e.lv - 1) * 0.16;
+            const maxHp = Math.round(tpl.hp * lvMult * 0.92);
+            const atk = Math.round(tpl.atk * lvMult * 0.88);
+            const def = Math.round(tpl.def * lvMult * 0.9);
+            return {
+                uid: 'enemy_' + idx,
+                side: 'enemy',
+                pos: idx,
+                name: tpl.name,
+                emblem: tpl.emblem,
+                element: tpl.element,
+                rarity: tpl.rarity,
+                maxHp,
+                hp: maxHp,
+                atk,
+                def,
+                np: 20,
+                ultName: tpl.ultName,
+                ultType: tpl.ultType,
+                ultMult: tpl.ultMult
+            };
+        });
+
+        document.getElementById('battle-location-title').textContent = node.name;
+        document.getElementById('battle-turn-num').textContent = this.turn;
+        document.getElementById('battle-faction-bonus-tag').textContent = `${Game.state.faction.name}光環生效中`;
+        document.getElementById('battle-combat-log').innerHTML = '';
+        document.getElementById('battle-screen').classList.remove('hidden');
+
+        this.log(`⚔️ 遠征軍抵達【${node.name}】，與守軍展開激戰！`);
+        this.renderUnits();
+        this.scheduleNextTurn();
+    },
+
+    toggleAuto() {
+        SoundFX.playClick();
+        this.autoMode = !this.autoMode;
+        document.getElementById('btn-battle-auto').textContent = this.autoMode ? '🤖 自動戰鬥：開啟' : '🖐️ 手動奧義：開啟';
+        if (this.autoMode && this.active) {
+            this.allies.filter(a => a.hp > 0 && a.np >= 100).forEach(a => this.castUltimate(a));
+        }
+    },
+
+    toggleSpeed() {
+        SoundFX.playClick();
+        this.speedMult = this.speedMult === 1 ? 2 : 1;
+        document.getElementById('btn-battle-speed').textContent = `⏩ 速度：${this.speedMult}x`;
+    },
+
+    retreat() {
+        SoundFX.playClick();
+        this.cleanup();
+        Game.showToast('遠征軍已安全撤回大本營。', 'info');
+        Game.addLog(`從【${this.node.name}】戰場撤退整編。`);
+    },
+
+    cleanup() {
+        this.active = false;
+        if (this.timer) clearTimeout(this.timer);
+        document.getElementById('battle-screen').classList.add('hidden');
+        Game.updateAllUI();
+    },
+
+    log(msg) {
+        const box = document.getElementById('battle-combat-log');
+        const line = document.createElement('div');
+        line.innerHTML = msg;
+        box.prepend(line);
+    },
+
+    setBanner(msg) {
+        document.getElementById('battle-banner-msg').textContent = msg;
+    },
+
+    // 元素克制倍率計算
+    getElementMultiplier(atkEl, defEl) {
+        const adv = { fire: 'wind', wind: 'water', water: 'fire' };
+        if (adv[atkEl] === defEl) {
+            return Game.state.faction.id === 'primordial' ? 1.45 : 1.25;
+        }
+        if ((atkEl === 'light' && defEl === 'dark') || (atkEl === 'dark' && defEl === 'light')) {
+            return Game.state.faction.id === 'primordial' ? 1.4 : 1.2;
+        }
+        return 1.0;
+    },
+
+    renderUnits() {
+        const enemyBox = document.getElementById('battle-enemy-units');
+        const allyBox = document.getElementById('battle-ally-units');
+
+        enemyBox.innerHTML = this.enemies.map(u => {
+            const el = ELEMENTS[u.element];
+            const hpPct = Math.max(0, Math.round((u.hp / u.maxHp) * 100));
+            const dead = u.hp <= 0;
+            const targeted = this.selectedTargetId === u.uid;
+            return `
+                <div id="unit-card-${u.uid}" onclick="Battle.selectTarget('${u.uid}')"
+                     class="relative rounded-xl p-2.5 border ${targeted ? 'border-amber-400 ring-2 ring-amber-400/60' : 'border-rose-500/40'} bg-slate-900/90 transition cursor-pointer ${dead ? 'opacity-30 grayscale' : ''}">
+                    ${targeted && !dead ? '<span class="absolute -top-2 right-2 bg-rose-600 text-white text-[10px] px-1.5 rounded">🎯 鎖定</span>' : ''}
+                    <div class="flex justify-between items-center text-[10px] mb-1">
+                        <span class="${el.color}">${el.icon} ${el.name}</span>
+                        <span class="text-rose-300">NP ${u.np}%</span>
+                    </div>
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span class="text-2xl">${u.emblem}</span>
+                        <div class="min-w-0">
+                            <div class="font-epic font-bold text-xs sm:text-sm text-white truncate">${u.name}</div>
+                            <div class="text-[10px] text-slate-400">HP ${u.hp}/${u.maxHp}</div>
+                        </div>
+                    </div>
+                    <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-rose-600 to-rose-400 transition-all duration-300" style="width: ${hpPct}%"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        allyBox.innerHTML = this.allies.map(u => {
+            const el = ELEMENTS[u.element];
+            const hpPct = Math.max(0, Math.round((u.hp / u.maxHp) * 100));
+            const npPct = Math.min(100, u.np);
+            const dead = u.hp <= 0;
+            const readyUlt = !dead && u.np >= 100;
+            return `
+                <div id="unit-card-${u.uid}" onclick="Battle.onAllyCardClick('${u.uid}')"
+                     class="relative rounded-xl p-2.5 rarity-${u.rarity} transition ${dead ? 'opacity-30 grayscale' : ''} ${readyUlt ? 'ring-2 ring-amber-300 animate-pulse cursor-pointer' : ''}">
+                    ${readyUlt ? '<span class="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-amber-500 text-black font-black text-[10px] px-2 py-0.5 rounded-full shadow whitespace-nowrap">⚡ 點擊施放奧義!</span>' : ''}
+                    <div class="flex justify-between items-center text-[10px] mb-1">
+                        <span class="${el.color}">${el.icon} ${el.name}</span>
+                        <span class="text-amber-300 font-bold">怒氣 ${npPct}%</span>
+                    </div>
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <span class="text-2xl">${u.emblem}</span>
+                        <div class="min-w-0">
+                            <div class="font-epic font-bold text-xs sm:text-sm text-white truncate">${u.name}</div>
+                            <div class="text-[10px] text-emerald-300">HP ${u.hp}/${u.maxHp}</div>
+                        </div>
+                    </div>
+                    <!-- 生命條 -->
+                    <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden mb-1">
+                        <div class="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-300" style="width: ${hpPct}%"></div>
+                    </div>
+                    <!-- 怒氣條 -->
+                    <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-amber-500 to-yellow-300 transition-all duration-300" style="width: ${npPct}%"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    },
+
+    selectTarget(uid) {
+        const target = this.enemies.find(e => e.uid === uid && e.hp > 0);
+        if (!target) return;
+        SoundFX.playClick();
+        this.selectedTargetId = uid;
+        this.renderUnits();
+    },
+
+    onAllyCardClick(uid) {
+        const unit = this.allies.find(a => a.uid === uid && a.hp > 0);
+        if (!unit) return;
+        if (unit.np >= 100) {
+            this.castUltimate(unit);
+        } else {
+            Game.showToast(`${unit.name} 怒氣尚未滿 100%（目前 ${unit.np}%）`, 'info');
+        }
+    },
+
+    spawnFloatingText(uid, text, colorClass = 'text-amber-300') {
+        const card = document.getElementById(`unit-card-${uid}`);
+        if (!card) return;
+        card.classList.add('animate-hit');
+        setTimeout(() => card.classList.remove('animate-hit'), 420);
+
+        const pop = document.createElement('div');
+        pop.className = `damage-popup font-epic font-black text-base sm:text-xl ${colorClass} left-1/2 -translate-x-1/2 top-2`;
+        pop.textContent = text;
+        card.appendChild(pop);
+        setTimeout(() => pop.remove(), 1100);
+    },
+
+    showUltCutIn(heroName, ultName) {
+        const overlay = document.getElementById('ult-cutin-overlay');
+        const box = document.getElementById('ult-cutin-box');
+        document.getElementById('ult-cutin-subtitle').textContent = `${heroName} · DIVINE OVERDRIVE`;
+        document.getElementById('ult-cutin-title').textContent = ultName;
+
+        overlay.classList.remove('hidden');
+        box.classList.remove('cut-in-banner');
+        void box.offsetWidth;
+        box.classList.add('cut-in-banner');
+
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+        }, 1200 / this.speedMult);
+    },
+
+    scheduleNextTurn() {
+        if (!this.active) return;
+        const delay = 1150 / this.speedMult;
+        this.timer = setTimeout(() => this.executeRound(), delay);
+    },
+
+    async executeRound() {
+        if (!this.active) return;
+
+        // 聖輝教廷陣營被動：每回合恢復 5% 生命
+        if (Game.state.faction.id === 'sacred') {
+            this.allies.forEach(a => {
+                if (a.hp > 0 && a.hp < a.maxHp) {
+                    const heal = Math.round(a.maxHp * 0.05);
+                    a.hp = Math.min(a.maxHp, a.hp + heal);
+                }
+            });
+        }
+
+        const turnOrder = [...this.allies, ...this.enemies].filter(u => u.hp > 0);
+
+        for (const actor of turnOrder) {
+            if (!this.active || actor.hp <= 0) continue;
+            if (this.checkBattleEnd()) return;
+
+            const isAlly = actor.side === 'ally';
+            const targets = (isAlly ? this.enemies : this.allies).filter(u => u.hp > 0);
+            if (targets.length === 0) break;
+
+            // 怒氣滿 100 且（自動戰鬥 或 敵方單位）則施放奧義
+            if (actor.np >= 100 && (!isAlly || this.autoMode)) {
+                this.castUltimate(actor);
+                await this.sleep(950 / this.speedMult);
+            } else {
+                // 普通攻擊（優先攻擊鎖定目標或前排）
+                let target = targets[0];
+                if (isAlly && this.selectedTargetId) {
+                    const locked = targets.find(t => t.uid === this.selectedTargetId);
+                    if (locked) target = locked;
+                }
+                this.performNormalAttack(actor, target);
+                await this.sleep(650 / this.speedMult);
+            }
+
+            if (this.checkBattleEnd()) return;
+        }
+
+        this.turn += 1;
+        document.getElementById('battle-turn-num').textContent = this.turn;
+        this.scheduleNextTurn();
+    },
+
+    sleep(ms) {
+        return new Promise(res => setTimeout(res, ms));
+    },
+
+    performNormalAttack(actor, target) {
+        SoundFX.playMagicAttack(actor.element);
+        const elMult = this.getElementMultiplier(actor.element, target.element);
+        const isCrit = Math.random() < 0.22;
+        const critMult = isCrit ? (Game.state.faction.id === 'abyss' ? 1.75 : 1.5) : 1.0;
+        const rawDmg = Math.max(25, actor.atk - target.def * 0.45);
+        const dmg = Math.round(rawDmg * elMult * critMult * (0.95 + Math.random() * 0.1));
+
+        target.hp = Math.max(0, target.hp - dmg);
+        actor.np = Math.min(100, actor.np + 35);
+        target.np = Math.min(100, target.np + 15);
+
+        const tag = elMult > 1 ? '克制!' : isCrit ? '暴擊!' : '';
+        this.setBanner(`${actor.name} 施展普攻命中 ${target.name}，造成 ${dmg} 點傷害 ${tag}`);
+        this.log(`<span class="${actor.side === 'ally' ? 'text-amber-300' : 'text-rose-300'}">${actor.name}</span> 攻擊 ${target.name} 造成 <b>${dmg}</b> 傷害 ${tag}`);
+        this.spawnFloatingText(target.uid, `-${dmg} ${tag}`, isCrit ? 'text-amber-400' : 'text-white');
+        this.renderUnits();
+    },
+
+    castUltimate(actor) {
+        if (actor.hp <= 0 || actor.np < 100) return;
+        actor.np = 0;
+        SoundFX.playUltimate();
+        this.showUltCutIn(actor.name, actor.ultName);
+
+        const isAlly = actor.side === 'ally';
+        const foes = (isAlly ? this.enemies : this.allies).filter(u => u.hp > 0);
+        const friends = (isAlly ? this.allies : this.enemies).filter(u => u.hp > 0);
+
+        this.setBanner(`✨ ${actor.name} 解放奧義【${actor.ultName}】！`);
+        this.log(`🔥 <span class="text-amber-300 font-bold">${actor.name}</span> 釋放奧義【${actor.ultName}】！`);
+
+        if (actor.ultType === 'single_nuke') {
+            let target = foes[0];
+            if (isAlly && this.selectedTargetId) {
+                const locked = foes.find(t => t.uid === this.selectedTargetId);
+                if (locked) target = locked;
+            }
+            if (target) {
+                const elMult = this.getElementMultiplier(actor.element, target.element);
+                const dmg = Math.round(Math.max(50, actor.atk * actor.ultMult - target.def * 0.3) * elMult);
+                target.hp = Math.max(0, target.hp - dmg);
+                this.spawnFloatingText(target.uid, `奧義 -${dmg}!`, 'text-amber-300');
+            }
+        } else {
+            // 全體攻擊奧義
+            foes.forEach(t => {
+                const elMult = this.getElementMultiplier(actor.element, t.element);
+                const dmg = Math.round(Math.max(40, actor.atk * actor.ultMult - t.def * 0.35) * elMult);
+                t.hp = Math.max(0, t.hp - dmg);
+                this.spawnFloatingText(t.uid, `-${dmg}`, 'text-fuchsia-300');
+            });
+
+            // 附加治療或全體怒氣增幅
+            if (actor.ultType === 'aoe_heal') {
+                friends.forEach(f => {
+                    const heal = Math.round(f.maxHp * 0.25);
+                    f.hp = Math.min(f.maxHp, f.hp + heal);
+                    this.spawnFloatingText(f.uid, `+${heal}`, 'text-emerald-300');
+                });
+            } else if (actor.ultType === 'team_buff') {
+                friends.forEach(f => {
+                    if (f.uid !== actor.uid) f.np = Math.min(100, f.np + 35);
+                    this.spawnFloatingText(f.uid, `+35 怒氣`, 'text-sky-300');
+                });
+            }
+        }
+
+        this.renderUnits();
+        this.checkBattleEnd();
+    },
+
+    checkBattleEnd() {
+        const aliveEnemies = this.enemies.filter(e => e.hp > 0);
+        const aliveAllies = this.allies.filter(a => a.hp > 0);
+
+        if (aliveEnemies.length === 0) {
+            this.active = false;
+            if (this.timer) clearTimeout(this.timer);
+            SoundFX.playVictory();
+            this.setBanner(`🏆 輝煌勝利！成功攻克【${this.node.name}】！`);
+
+            setTimeout(() => {
+                const firstClear = !this.node.conquered;
+                this.node.conquered = true;
+                const { resonanceMult } = Game.getRegionMiningStats(Game.state.currentRegionId);
+                const mult = this.node.isVein ? resonanceMult : 1;
+
+                const rewardCrystals = Math.round((firstClear ? this.node.crystals : this.node.crystals * 0.45) * mult);
+                const rewardGold = Math.round((firstClear ? this.node.gold : this.node.gold * 0.55) * mult);
+
+                Game.state.crystals += rewardCrystals;
+                Game.state.gold += rewardGold;
+                Game.state.cmdLv += firstClear ? 1 : 0;
+
+                const newStats = Game.getRegionMiningStats(Game.state.currentRegionId);
+                const veinBonusNotice = (firstClear && this.node.isVein)
+                    ? `（區域礦脈共振提升至 +${newStats.resonanceBonusPct}%！）`
+                    : '';
+
+                const winMsg = firstClear
+                    ? `首勝奪取【${this.node.name}】！獲得 💎+${rewardCrystals.toLocaleString()}、🪙+${rewardGold.toLocaleString()}${veinBonusNotice}`
+                    : `掃蕩開採【${this.node.name}】凱旋！獲得 💎+${rewardCrystals.toLocaleString()}、🪙+${rewardGold.toLocaleString()}`;
+
+                Game.showToast(winMsg, 'success');
+                Game.addLog(winMsg);
+                if (this.node.id === 'of_sanctum' && firstClear) {
+                    Game.addLog(`👑 史詩成就達成！指揮官已奪得【萬源聖殿・創世核心】，統御整片蒂爾大陸與所有源初礦脈！`);
+                }
+                this.cleanup();
+            }, 1300);
+            return true;
+        }
+
+        if (aliveAllies.length === 0) {
+            this.active = false;
+            if (this.timer) clearTimeout(this.timer);
+            setTimeout(() => {
+                Game.showToast(`戰局失利！請強化英雄等級或召喚新英靈後再行出征。`, 'error');
+                Game.addLog(`遠征軍在【${this.node.name}】遭遇強敵阻擊，暫時撤回重整。`);
+                this.cleanup();
+            }, 1200);
+            return true;
+        }
+
+        return false;
+    }
+};
+
+// 啟動遊戲初始化
+window.onload = () => {
+    Game.init();
+};
+</script>
+</body>
+</html>
